@@ -48,11 +48,22 @@
                     <li >
                         <a href="..">Home</a>
                     </li>
-                    <li class="active">
-                        <a href="./">Treatment</a>
-                    </li>
-                    <li >
-                        <a href="../Cured/">Cured</a>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">16S data <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../GettingStarted/">Getting Started</a>
+</li>
+                            
+<li class="active">
+    <a href="./">Treatment</a>
+</li>
+                            
+<li >
+    <a href="../Cured/">Cured</a>
+</li>
+                        </ul>
                     </li>
                     <li >
                         <a href="../about/">About</a>
@@ -66,7 +77,7 @@
                     </a>
                 </li>
                     <li >
-                        <a rel="next" href="..">
+                        <a rel="next" href="../GettingStarted/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
@@ -84,12 +95,12 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#hrze-and-the-gut-microbiome">HRZE and the gut microbiome</a></li>
-            <li><a href="#part-1-load-packages-and-import-16s-microbiome-data-into-r-from-uparse-pipeline">Part 1: Load packages and import 16S microbiome data into R from uparse pipeline</a></li>
-            <li><a href="#part-2-subset-phyloseq-data-and-run-deseq-data-normalization">Part 2: Subset phyloseq data and run DESeq data normalization</a></li>
+            <li><a href="#part-1-import-16s-uparse-output-into-r">Part 1: Import 16S uparse output into R</a></li>
+            <li><a href="#part-2-subset-samples-and-run-deseq-data-normalization">Part 2: Subset samples and run DESeq data normalization</a></li>
             <li><a href="#part-3-analyze-data-with-lefse">Part 3: Analyze data with LEfSe</a></li>
-            <li><a href="#part-4-principal-coordinates-analysis">Part 4: Principal Coordinates Analysis</a></li>
-            <li><a href="#part-5-making-a-heatmap-of-the-most-differentially-abundant-otus">Part 5: Making a heatmap of the most differentially abundant OTUs</a></li>
-            <li><a href="#part-6-making-a-phylogenetic-tree-with-relative-otu-abundance-in-a-heatmap">Part 6: Making a phylogenetic tree with relative OTU abundance in a heatmap</a></li>
+            <li><a href="#part-4-principal-coordinate-analysis">Part 4: Principal Coordinate Analysis</a></li>
+            <li><a href="#part-5-making-a-heatmap">Part 5: Making a heatmap</a></li>
+            <li><a href="#part-6-making-a-phylogenetic-tree-heatmap">Part 6: Making a phylogenetic tree + heatmap</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -100,7 +111,8 @@
 <p>Scientific Reports 7, Article number: 10767 (2017)</p>
 <p><a href="https://www.nature.com/articles/s41598-017-10346-6">doi: 10.1038/s41598-017-10346-6</a></p>
 <p>It shows how to take microbiome data and reproduce the figures from this paper.</p>
-<h2 id="part-1-load-packages-and-import-16s-microbiome-data-into-r-from-uparse-pipeline">Part 1: Load packages and import 16S microbiome data into R from uparse pipeline</h2>
+<h2 id="part-1-import-16s-uparse-output-into-r">Part 1: Import 16S uparse output into R</h2>
+<p>I probably have more packages here than I are actually needed to generate the figures in this tutorial, but I have never had a problem loading all of them in this order. One exception is DESeq, which needs to be loaded <em>after</em> the Phyloseq object is constructed.</p>
 <pre><code class="r">setwd(&quot;~/Desktop/uparse_july/&quot;)
 
 rm(list=ls())
@@ -119,6 +131,7 @@ rownames_to_column &lt;- tibble::rownames_to_column
 </code></pre>
 
 <h3 id="necessary-uparse-pipeline-output-files-for-downstream-16s-data-analysis">Necessary uparse pipeline output files for downstream 16S data analysis</h3>
+<p>These are the four files generated from a slightly modified version of the uparse pipeline. The only truly unique file here is the tax.file (repset.fasta.blastn.refseq_rna.txt), which contains information about the top 30 BLASTn hits for each OTU in the seq.file (total.5.repset.fasta). The biom.file (total.8.otu-tax.biom) is a type of data frame where the columns correspond to people and the rows correspond to each OTU from the seq.file. Finally, the tree.file is generated from a Qiime python script called make_phylogeny.py, which represents true evolutionary distance between these OTU sequences (i.e., the seq.file). These four files generated from uparse, qiime, and blast contain all of the information one needs to accurately analyze microbiome data and generate the types of plots in this tutorial. I make use of many commands from the yingtools2 R package, written by Ying Taur at MSKCC. </p>
 <pre><code class="r">#edit the $PATH to these files
 biom.file &lt;- &quot;~/Desktop/uparse_july/total.8.otu-tax.biom&quot;
 seq.file &lt;- &quot;~/Desktop/uparse_july/total.5.repset.fasta&quot;
@@ -149,7 +162,7 @@ tax_table(phy) &lt;- tax
 sample_data(phy) &lt;- samp %&gt;% set.samp()
 </code></pre>
 
-<h2 id="part-2-subset-phyloseq-data-and-run-deseq-data-normalization">Part 2: Subset phyloseq data and run DESeq data normalization</h2>
+<h2 id="part-2-subset-samples-and-run-deseq-data-normalization">Part 2: Subset samples and run DESeq data normalization</h2>
 <pre><code class="markdown">#IGRA positive, only community cohort vs treatment
 phyIGRA_pos_treatment &lt;- subset_samples(phy,!is.na(IGRA) &amp; IGRA!=&quot;negative&quot;) #can change this first variable to increase contorl sample size by including all IGRA- people, change &quot;negative&quot; to &quot;&quot;
 phyIGRA_pos_treatment &lt;- subset_samples(phyIGRA_pos_treatment,!is.na(IGRA) &amp; IGRA!=&quot;&quot;)
@@ -232,7 +245,7 @@ taxa_names(phy_DESeq) &lt;- gsub(&quot;;&quot;,&quot;_&quot;,taxa_names(phy_DESe
 <pre><code class="r">hist(log10(apply(otu_table(phy_DESeq), 1, var)), xlab = &quot;log10(variance)&quot;, main = &quot;A large fraction of OTUs have very low variance&quot;)
 </code></pre>
 
-<p><img alt="Image of otu_variance_histogram" src="../img/otu_variance_histogram.png" /></p>
+<p><img alt="Image of otu_variance_histogram" src="../img/Treatment/otu_variance_histogram.png" /></p>
 <h3 id="convert-the-phyloseq-object-to-deseq-object-normalize-with-respect-to-tb-status-and-plot-the-results">Convert the phyloseq object to DESeq object, normalize with respect to TB status, and plot the results</h3>
 <pre><code class="r">dig &lt;- phyloseq_to_deseq2(phy_DESeq, ~ TB_status) #replace this with any sample variable(s)
 
@@ -272,7 +285,7 @@ theme(axis.text=element_text(size=12,face=&quot;bold&quot;),legend.text=element_
 </code></pre>
 
 <p>This plot shows the log2 fold change between IGRA+ people and people on HRZE antibiotic treatment for Tuberculosis. Most of the OTUs fall below zero because they are depleted in people taking antibiotics. Some OTUs are increased however, potentially taking advantage of the altered ecosystem of the gut while taking antibiotics.
-<img alt="Image of log2FoldChange_LTBIvsHRZE" src="../img/log2FoldChange_LTBIvsHRZE.png" /></p>
+<img alt="Image of log2FoldChange_LTBIvsHRZE" src="../img/Treatment/log2FoldChange_LTBIvsHRZE.png" /></p>
 <h2 id="part-3-analyze-data-with-lefse">Part 3: Analyze data with LEfSe</h2>
 <h5 id="lefse-website-lefse">LEfSe website: <a href="https://bitbucket.org/biobakery/biobakery/wiki/lefse">LEfSe</a></h5>
 <h3 id="check-the-path-in-rstudio-to-make-sure-lefse-python-scripts-are-there">Check the $PATH in RStudio to make sure LEfSe Python scripts are there</h3>
@@ -383,8 +396,8 @@ print(g2)
 </code></pre>
 
 <p>Using ggplot's geom_boxplot function, we can plot the most significantly differentially changed OTUs for LTBI vs HRZE people. I left the outliers in just to highlight that they are there, although we removed them for the actual paper for aesthetic purposes:
-<img alt="Image of boxplot_HRZE_treatment_lefse0.05" src="../img/boxplot_HRZE_treatment_lefse0.05.png" /></p>
-<h2 id="part-4-principal-coordinates-analysis">Part 4: Principal Coordinates Analysis</h2>
+<img alt="Image of boxplot_HRZE_treatment_lefse0.05" src="../img/Treatment/boxplot_HRZE_treatment_lefse0.05.png" /></p>
+<h2 id="part-4-principal-coordinate-analysis">Part 4: Principal Coordinate Analysis</h2>
 <pre><code class="r">phy_ord &lt;- ordinate(phyIGRA_pos_treatment, &quot;NMDS&quot;, &quot;bray&quot;)
 p &lt;- plot_ordination(phyIGRA_pos_treatment,phy_ord, color=&quot;TB_status&quot;)
 p + geom_point(size=4)
@@ -402,8 +415,8 @@ scale_colour_manual(values=Palette_LTBI_treatment)
 </code></pre>
 
 <p>The Nonmetric Multidimensional Scaling (NMDS) output does not give traditional PCA % variance values, but is good for count data, and performs well separating people on HRZE and healthy LTBI controls:
-<img alt="Image of boxplot_NMDS_HRZE_LTBI" src="../img/NMDS_HRZE_LTBI.png" /></p>
-<h2 id="part-5-making-a-heatmap-of-the-most-differentially-abundant-otus">Part 5: Making a heatmap of the most differentially abundant OTUs</h2>
+<img alt="Image of boxplot_NMDS_HRZE_LTBI" src="../img/Treatment/NMDS_HRZE_LTBI.png" /></p>
+<h2 id="part-5-making-a-heatmap">Part 5: Making a heatmap</h2>
 <p>Heatmaps are my personal favorite way of looking at this type of data. Ideally one would put much more information than just a heatmap into a single figure, but let's start with making a heatmap of just the top 40 most differentially abundant OTUs, and then perform unsupervised hierarchical clustering.</p>
 <pre><code class="r">rst &lt;- varianceStabilizingTransformation(dig, blind=FALSE,fitType = &quot;parametric&quot;)
 sampleDists &lt;- dist( t( assay(rst) ) )
@@ -417,8 +430,8 @@ pheatmap(mat, annotation_col=df,clustering_distance_rows = &quot;correlation&quo
 clustering_method = &quot;ward.D2&quot;,show_colnames = F)
 </code></pre>
 
-<p><img alt="Image of HeatmapHRZE" src="../img/HeatmapHRZE.png" /></p>
-<h2 id="part-6-making-a-phylogenetic-tree-with-relative-otu-abundance-in-a-heatmap">Part 6: Making a phylogenetic tree with relative OTU abundance in a heatmap</h2>
+<p><img alt="Image of HeatmapHRZE" src="../img/Treatment/HeatmapHRZE.png" /></p>
+<h2 id="part-6-making-a-phylogenetic-tree-heatmap">Part 6: Making a phylogenetic tree + heatmap</h2>
 <p>People always ask me about individuals on treatment (HRZE) and what effect(s) there are on the Actinobacteria in the microbitoa. Interestingly, the major effects are in the Firmicutes, and as a Phylum, the Actinobacteria are largely untouched, with the exception of a species of Bifidobacterium. The plot below takes the phylogenetic tree of Actinobacteria (generated from make_phylogeny.py) and maps the relative abundance of each OTU on the tree in a heatmap.</p>
 <pre><code class="r">p_actino &lt;- subset_samples(phy,!is.na(IGRA) &amp; IGRA!=&quot;&quot;)
 p.species &lt;- subset_taxa(p_actino, Phylum==&quot;Actinobacteria&quot;)
@@ -444,7 +457,7 @@ theme(legend.position=&quot;right&quot;)
 g1 + scale_fill_manual(values=Palette_actino)
 </code></pre>
 
-<p><img alt="Image of Actinobacteria phylogenetic tree" src="../img/actino_tree.png" /></p></div>
+<p><img alt="Image of Actinobacteria phylogenetic tree" src="../img/Treatment/actino_tree.png" /></p></div>
         </div>
 
         <footer class="col-md-12">

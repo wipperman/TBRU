@@ -10,19 +10,25 @@
     
 
     
+        
+    <url>
+     <loc>/GettingStarted/</loc>
+     <lastmod>2017-11-01</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
     <url>
      <loc>/Treatment/</loc>
      <lastmod>2017-11-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
+        
     <url>
      <loc>/Cured/</loc>
      <lastmod>2017-11-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     
 
     
