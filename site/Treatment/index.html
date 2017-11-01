@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Treatment - TBRU</title>
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="..">TBRU</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                    <li class="active">
+                        <a href="./">Treatment</a>
+                    </li>
+                    <li >
+                        <a href="../about/">About</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="..">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../about/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#hrze-and-the-gut-microbiome">HRZE and the gut microbiome</a></li>
+            <li><a href="#part-1-load-packages-and-import-16s-microbiome-data-into-r-from-uparse-pipeline">Part 1: Load packages and import 16S microbiome data into R from uparse pipeline</a></li>
+            <li><a href="#part-2-subset-phyloseq-data-and-run-deseq-data-normalization">Part 2: Subset phyloseq data and run DESeq data normalization</a></li>
+            <li><a href="#part-3-analyze-data-with-lefse">Part 3: Analyze data with LEfSe</a></li>
+            <li><a href="#part-4-principal-coordinates-analysis">Part 4: Principal Coordinates Analysis</a></li>
+            <li><a href="#part-5-making-a-heatmap-of-the-most-differentially-abundant-otus">Part 5: Making a heatmap of the most differentially abundant OTUs</a></li>
+            <li><a href="#part-6-making-a-phylogenetic-tree-with-relative-otu-abundance-in-a-heatmap">Part 6: Making a phylogenetic tree with relative OTU abundance in a heatmap</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="hrze-and-the-gut-microbiome">HRZE and the gut microbiome</h1>
+<p>This tutorial is a walkthrough of the data analysis from:</p>
+<p>Antibiotic treatment for Tuberculosis induces a profound dysbiosis of the microbiome that persists long after therapy is completed</p>
+<p>Scientific Reports 7, Article number: 10767 (2017)</p>
+<p><a href="https://www.nature.com/articles/s41598-017-10346-6">doi: 10.1038/s41598-017-10346-6</a></p>
+<p>It shows how to take microbiome data and reproduce the figures from this paper.</p>
+<h2 id="part-1-load-packages-and-import-16s-microbiome-data-into-r-from-uparse-pipeline">Part 1: Load packages and import 16S microbiome data into R from uparse pipeline</h2>
+<pre><code class="r">setwd(&quot;~/Desktop/uparse_july/&quot;)
+
+rm(list=ls())
+library(plyr);library(ggtree);library(phyloseq);library(ggplot2);library(scales);library(grid)
+library(Hmisc);library(gridExtra);library(scales);library(stringr);library(logistf)
+library(coxphf);library(reshape2);library(ifultools);library(car);library(vegan)
+library(gdata);library(chron);library(data.table);library(tidyr) #imports tibble
+library(ggplot2);library(yingtools2);library(gridExtra);library(lubridate);library(dplyr)
+library(&quot;pheatmap&quot;);library(&quot;RColorBrewer&quot;);library(&quot;genefilter&quot;);library(ggthemes)
+</code></pre>
+
+<h3 id="give-priority-to-specific-functions-for-annoying-namespace-reasons">Give priority to specific functions for annoying namespace reasons</h3>
+<pre><code class="r">select &lt;- dplyr::select
+summarize &lt;- dplyr::summarize
+rownames_to_column &lt;- tibble::rownames_to_column
+</code></pre>
+
+<h3 id="necessary-uparse-pipeline-output-files-for-downstream-16s-data-analysis">Necessary uparse pipeline output files for downstream 16S data analysis</h3>
+<pre><code class="r">#edit the $PATH to these files
+biom.file &lt;- &quot;~/Desktop/uparse_july/total.8.otu-tax.biom&quot;
+seq.file &lt;- &quot;~/Desktop/uparse_july/total.5.repset.fasta&quot;
+tax.file &lt;- &quot;~/Desktop/uparse_july/total.5.repset.fasta.blastn.refseq_rna.txt&quot;
+tree.file &lt;- &quot;~/Desktop/uparse_july/total.10.tree&quot;
+
+biom &lt;- import_biom(biom.file)
+seq &lt;- import_qiime(refseqfilename=seq.file)
+tree &lt;- yingtools2::read.tree.uparse(tree.file)
+
+#make tax object with BLAST names (skip this step to assign GreenGenes names instead)
+tax &lt;- yingtools2::read.blastn.file(tax.file) %&gt;% set.tax()
+</code></pre>
+
+<h3 id="import-and-setup-sample-data-metadata-for-each-person-in-the-study">Import and setup sample data (metadata for each person in the study)</h3>
+<pre><code class="r">data.file &lt;- &quot;TBRU_Metadata_May2017.csv&quot;
+data &lt;- read.csv(data.file,na.strings=c(&quot;N/A&quot;,&quot;99999&quot;)) %&gt;% mutate(sample=gsub(&quot;\\-&quot;,&quot;.&quot;,sample))
+samp &lt;- data %&gt;% data.frame()
+
+#fix some name issues in the biom file to make sample_names(biom) consistent
+sample_names(biom) &lt;- gsub(&quot;..pool749&quot;,&quot;&quot;,sample_names(biom))
+sample_names(biom) &lt;- gsub(&quot;\034&quot;,&quot;&quot;,sample_names(biom))
+</code></pre>
+
+<h3 id="merge-all-data-together-to-create-the-final-phyloseq-object">Merge all data together to create the final phyloseq object</h3>
+<pre><code class="r">phy &lt;- merge_phyloseq(biom,seq,tree)
+tax_table(phy) &lt;- tax
+sample_data(phy) &lt;- samp %&gt;% set.samp()
+</code></pre>
+
+<h2 id="part-2-subset-phyloseq-data-and-run-deseq-data-normalization">Part 2: Subset phyloseq data and run DESeq data normalization</h2>
+<pre><code class="markdown">#IGRA positive, only community cohort vs treatment
+phyIGRA_pos_treatment &lt;- subset_samples(phy,!is.na(IGRA) &amp; IGRA!=&quot;negative&quot;) #can change this first variable to increase contorl sample size by including all IGRA- people, change &quot;negative&quot; to &quot;&quot;
+phyIGRA_pos_treatment &lt;- subset_samples(phyIGRA_pos_treatment,!is.na(IGRA) &amp; IGRA!=&quot;&quot;)
+phyIGRA_pos_treatment &lt;- subset_samples(phyIGRA_pos_treatment,!is.na(TB_status) &amp; TB_status!=&quot;cured&quot;)
+phyIGRA_pos_treatment &lt;- subset_samples(phyIGRA_pos_treatment,!is.na(TB_status) &amp; TB_status!=&quot;&quot;)
+phyIGRA_pos_treatment &lt;- subset_samples(phyIGRA_pos_treatment,!is.na(Group6_TB_category) &amp; Group6_TB_category!=&quot;family_contact&quot;)
+phyIGRA_pos_treatment &lt;- subset_samples(phyIGRA_pos_treatment,age &lt; 33)
+</code></pre>
+
+<h3 id="view-the-family-level-distribution-of-taxa-between-the-two-groups">View the Family-level distribution of taxa between the two groups</h3>
+<pre><code class="r">assignCols &lt;- function(names,selection) {
+mymap&lt;-list()
+availableCols &lt;-c(&quot;#000000&quot;, &quot;#FFFF00&quot;, &quot;#1CE6FF&quot;, &quot;#FF34FF&quot;, &quot;#FF4A46&quot;, &quot;#008941&quot;, &quot;#006FA6&quot;, &quot;#A30059&quot;,
+&quot;#FFDBE5&quot;, &quot;#7A4900&quot;, &quot;#0000A6&quot;, &quot;#63FFAC&quot;, &quot;#B79762&quot;, &quot;#004D43&quot;, &quot;#8FB0FF&quot;, &quot;#997D87&quot;,
+&quot;#5A0007&quot;, &quot;#809693&quot;, &quot;#FEFFE6&quot;, &quot;#1B4400&quot;, &quot;#4FC601&quot;, &quot;#3B5DFF&quot;, &quot;#4A3B53&quot;, &quot;#FF2F80&quot;,
+&quot;#61615A&quot;, &quot;#BA0900&quot;, &quot;#6B7900&quot;, &quot;#00C2A0&quot;, &quot;#FFAA92&quot;, &quot;#FF90C9&quot;, &quot;#B903AA&quot;, &quot;#D16100&quot;,
+&quot;#DDEFFF&quot;, &quot;#000035&quot;, &quot;#7B4F4B&quot;, &quot;#A1C299&quot;, &quot;#300018&quot;, &quot;#0AA6D8&quot;, &quot;#013349&quot;, &quot;#00846F&quot;,
+&quot;#372101&quot;, &quot;#FFB500&quot;, &quot;#C2FFED&quot;, &quot;#A079BF&quot;, &quot;#CC0744&quot;, &quot;#C0B9B2&quot;, &quot;#C2FF99&quot;, &quot;#001E09&quot;,
+&quot;#00489C&quot;, &quot;#6F0062&quot;, &quot;#0CBD66&quot;, &quot;#EEC3FF&quot;, &quot;#456D75&quot;, &quot;#B77B68&quot;, &quot;#7A87A1&quot;, &quot;#788D66&quot;,
+&quot;#885578&quot;, &quot;#FAD09F&quot;, &quot;#FF8A9A&quot;, &quot;#D157A0&quot;, &quot;#BEC459&quot;, &quot;#456648&quot;, &quot;#0086ED&quot;, &quot;#886F4C&quot;,
+&quot;#34362D&quot;, &quot;#B4A8BD&quot;, &quot;#00A6AA&quot;, &quot;#452C2C&quot;, &quot;#636375&quot;, &quot;#A3C8C9&quot;, &quot;#FF913F&quot;, &quot;#938A81&quot;,
+&quot;#575329&quot;, &quot;#00FECF&quot;, &quot;#B05B6F&quot;, &quot;#8CD0FF&quot;, &quot;#3B9700&quot;, &quot;#04F757&quot;, &quot;#C8A1A1&quot;, &quot;#1E6E00&quot;,
+&quot;#7900D7&quot;, &quot;#A77500&quot;, &quot;#6367A9&quot;, &quot;#A05837&quot;, &quot;#6B002C&quot;, &quot;#772600&quot;, &quot;#D790FF&quot;, &quot;#9B9700&quot;,
+&quot;#549E79&quot;, &quot;#FFF69F&quot;, &quot;#201625&quot;, &quot;#72418F&quot;, &quot;#BC23FF&quot;, &quot;#99ADC0&quot;, &quot;#3A2465&quot;, &quot;#922329&quot;,
+&quot;#5B4534&quot;, &quot;#FDE8DC&quot;, &quot;#404E55&quot;, &quot;#0089A3&quot;, &quot;#CB7E98&quot;, &quot;#A4E804&quot;, &quot;#324E72&quot;, &quot;#6A3A4C&quot;,
+&quot;#83AB58&quot;, &quot;#001C1E&quot;, &quot;#D1F7CE&quot;, &quot;#004B28&quot;, &quot;#C8D0F6&quot;, &quot;#A3A489&quot;, &quot;#806C66&quot;, &quot;#222800&quot;,
+&quot;#BF5650&quot;, &quot;#E83000&quot;, &quot;#66796D&quot;, &quot;#DA007C&quot;, &quot;#FF1A59&quot;, &quot;#8ADBB4&quot;, &quot;#1E0200&quot;, &quot;#5B4E51&quot;,
+&quot;#C895C5&quot;, &quot;#320033&quot;, &quot;#FF6832&quot;, &quot;#66E1D3&quot;, &quot;#CFCDAC&quot;, &quot;#D0AC94&quot;, &quot;#7ED379&quot;, &quot;#012C58&quot;)
+mymap[[1]]&lt;-rev(availableCols[match(intersect(names,selection),names)])
+mymap[[2]]&lt;-intersect(names,selection)
+mymap
+};
+
+#function to make a tax plot faceted by whatever variable
+plot.tax &lt;- function(phyloseq, variable){
+t &lt;- get.otu.melt(phyIGRA_pos_treatment) %&gt;% arrange(Kingdom, Phylum, Class, Order, Family, Genus, Class) %&gt;%
+mutate(TB_status = factor(TB_status,levels = unique(TB_status))) %&gt;% group_by(sample) %&gt;%
+arrange(TB_status) %&gt;% mutate(cum.pct = cumsum(pctseqs),
+y.text = (cum.pct + c(0, cum.pct[-length(cum.pct)]))/2) %&gt;%
+ungroup() %&gt;% dplyr::select(-cum.pct)
+g &lt;- ggplot() + geom_bar(data = t, aes_string(x = &quot;sample&quot;,
+y = &quot;pctseqs&quot;, fill = &quot;Order&quot;), stat = &quot;identity&quot;,position = &quot;fill&quot;) +
+theme(legend.position = &quot;bottom&quot;) + facet_grid(~TB_status,scales=&quot;free&quot;,space=&quot;free&quot;)
+g
+return(g)
+}
+
+t &lt;- get.otu.melt(phyIGRA_pos_treatment) %&gt;% arrange(Kingdom, Phylum, Class, Order, Family, Genus, Class) %&gt;%
+mutate(TB_status = factor(TB_status,levels = unique(TB_status))) %&gt;% group_by(sample) %&gt;%
+arrange(TB_status) %&gt;% mutate(cum.pct = cumsum(pctseqs),
+y.text = (cum.pct + c(0, cum.pct[-length(cum.pct)]))/2) %&gt;%
+ungroup() %&gt;% dplyr::select(-cum.pct) %&gt;% as.data.frame()
+
+#show the Family level in the plot
+mycol &lt;- assignCols(unique(t$Family),unique(t$Family))
+
+barplot &lt;- ggplot() + geom_bar(data = t, aes_string(x = &quot;sample&quot;, y = &quot;pctseqs&quot;, fill = &quot;Family&quot;),stat = &quot;identity&quot;,position = &quot;fill&quot;) +
+facet_grid(~TB_status,scales=&quot;free&quot;,space=&quot;free&quot;) +
+theme(legend.position = &quot;bottom&quot;, axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank()) +
+theme(legend.text = element_text(size = 14)) +
+scale_fill_manual(values = mycol[[1]],breaks=mycol[[2]])
+barplot
+</code></pre>
+
+<p><img alt="Image of HRZE_barplot" src="../img/HRZE_LTBI_barplot.png" /></p>
+<h3 id="load-the-deseq2-package-make-taxa-names-more-friendly">Load the DESeq2 package, make taxa names more friendly</h3>
+<p>Downstream plotting of log2 differential abundance data from the DESeq output is made easier when the Species name and the specific OTU number are merged, since multiple OTUs can have the same name</p>
+<pre><code class="r">library(&quot;DESeq2&quot;)
+phy_DESeq &lt;- phyIGRA_pos_treatment
+
+t &lt;- get.tax(phy_DESeq) %&gt;% mutate(PhySpec=paste(Species,otu))
+taxa_names(phy_DESeq) &lt;- t$PhySpec
+taxa_names(phy_DESeq) &lt;- gsub(&quot; &quot;,&quot;_&quot;,taxa_names(phy_DESeq))
+taxa_names(phy_DESeq) &lt;- gsub(&quot;=&quot;,&quot;_&quot;,taxa_names(phy_DESeq))
+taxa_names(phy_DESeq) &lt;- gsub(&quot;;&quot;,&quot;_&quot;,taxa_names(phy_DESeq))
+</code></pre>
+
+<h3 id="check-the-variance-of-otu-abundances">Check the variance of OTU abundances</h3>
+<p>This plot tells you that most of the OTUs do not vary much from the raw sequencing data (this is a property of zero inflated data), but some have rather high variance. DESeq will attempt to normalize this variance with respect to a particular sample variable.</p>
+<pre><code class="r">hist(log10(apply(otu_table(phy_DESeq), 1, var)), xlab = &quot;log10(variance)&quot;, main = &quot;A large fraction of OTUs have very low variance&quot;)
+</code></pre>
+
+<p><img alt="Image of otu_variance_histogram" src="../img/otu_variance_histogram.png" /></p>
+<h3 id="convert-the-phyloseq-object-to-deseq-object-normalize-with-respect-to-tb-status-and-plot-the-results">Convert the phyloseq object to DESeq object, normalize with respect to TB status, and plot the results</h3>
+<pre><code class="r">dig &lt;- phyloseq_to_deseq2(phy_DESeq, ~ TB_status) #replace this with any sample variable(s)
+
+#calculate geometric mean
+gm_mean &lt;- function(x, na.rm=TRUE){
+exp(sum(log(x[x &gt; 0]), na.rm=na.rm) / length(x))
+}
+geoMeans &lt;- apply(counts(dig), 1, gm_mean)
+dig &lt;- estimateSizeFactors(dig, geoMeans = geoMeans)
+dig &lt;- estimateDispersions(dig)
+dig &lt;- DESeq(dig,fitType= &quot;local&quot;)
+
+res &lt;- results(dig)
+#res$pfdr &lt;- p.adjust(res$pvalue,method=&quot;fdr&quot;)
+res &lt;- res[order(res$padj, na.last=NA), ]
+alpha &lt;- 0.05
+sigtab &lt;- res[(res$padj &lt; alpha), ]
+sigtab &lt;- cbind(as(sigtab, &quot;data.frame&quot;), as(tax_table(phy_DESeq)[rownames(sigtab), ], &quot;matrix&quot;))
+head(sigtab) #view the data
+
+posigtab &lt;- sigtab[sigtab[, &quot;log2FoldChange&quot;] &gt; 1, ]
+posigtab &lt;- posigtab[, c(&quot;baseMean&quot;, &quot;log2FoldChange&quot;, &quot;lfcSE&quot;, &quot;padj&quot;, &quot;Phylum&quot;, &quot;Class&quot;, &quot;Family&quot;, &quot;Genus&quot;)]
+
+library(&quot;ggplot2&quot;)
+theme_set(theme_bw())
+sigtabgen &lt;- subset(sigtab, !is.na(Genus))
+sigtabgen &lt;- subset(sigtab, !is.na(Phylum))
+#Reorder the data to display the genus
+x &lt;- tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x &lt;- sort(x, TRUE)
+sigtabgen$Genus &lt;- factor(as.character(sigtabgen$Genus), levels=names(x))
+
+phylumcolors &lt;- c(&quot;hotpink&quot;,&quot;brown&quot;,&quot;lightblue&quot;,&quot;purple&quot;)
+ggplot(sigtabgen, aes(x = Genus, y = log2FoldChange, color = Phylum)) + geom_point(size = 6) +
+theme(axis.text.x = element_text(angle = -45, hjust = 0, vjust = 1)) +
+theme(axis.text=element_text(size=12,face=&quot;bold&quot;),legend.text=element_text(size=12))
+</code></pre>
+
+<p>This plot shows the log2 fold change between IGRA+ people and people on HRZE antibiotic treatment for Tuberculosis. Most of the OTUs fall below zero because they are depleted in people taking antibiotics. Some OTUs are increased however, potentially taking advantage of the altered ecosystem of the gut while taking antibiotics.
+<img alt="Image of log2FoldChange_LTBIvsHRZE" src="../img/log2FoldChange_LTBIvsHRZE.png" /></p>
+<h2 id="part-3-analyze-data-with-lefse">Part 3: Analyze data with LEfSe</h2>
+<h5 id="lefse-website-lefse">LEfSe website: <a href="https://bitbucket.org/biobakery/biobakery/wiki/lefse">LEfSe</a></h5>
+<h3 id="check-the-path-in-rstudio-to-make-sure-lefse-python-scripts-are-there">Check the $PATH in RStudio to make sure LEfSe Python scripts are there</h3>
+<pre><code class="r">system2(&quot;echo&quot;,args = &quot;$PATH&quot;)
+#RStudio should inherit the system path if it is opened at the command line with &quot;open -a RStudio&quot;
+</code></pre>
+
+<pre><code class="r">#acquire sample data from subsetted phyloseq object and set LEfSe parameters
+phy.lefse &lt;- phy_DESeq
+results_folder &lt;- &quot;~/Desktop/uparse_july/&quot;
+class &lt;- &quot;TB_status&quot;
+subclass&lt;-FALSE
+subject&lt;-&quot;sample&quot;
+anova.alpha&lt;-0.05 #this is the important p value
+wilcoxon.alpha&lt;-0.05
+lda.cutoff&lt;-3.0
+wilcoxon.within.subclass &lt;- TRUE
+one.against.one &lt;- T
+mult.test.correction &lt;- 0
+make.lefse.plots &lt;- FALSE
+by_otus &lt;- FALSE
+#
+sample.data &lt;- phyloseq::sample_data(phy.lefse) %&gt;% data.frame(stringsAsFactors = FALSE)
+sample.data$sample &lt;- rownames(sample.data)
+#
+keepvars &lt;- c(&quot;sample&quot;,&quot;TB_status&quot;)
+keepvars &lt;- unique(keepvars[!is.na(keepvars)])
+lefse.samp &lt;- sample.data[, keepvars]
+#
+sample0 &lt;- t(lefse.samp) %&gt;% as.matrix()
+colnames(sample0) &lt;- sample0[1,]
+sample0 &lt;- as.data.frame(sample0)
+#
+data0 &lt;- otu_table(phy.lefse) %&gt;% as.data.frame()
+data1 &lt;- data0 %&gt;% as.data.table(keep.rownames=T)
+sample1 &lt;- sample0 %&gt;% as.data.table(keep.rownames=T)
+common &lt;- intersect(colnames(data1), colnames(sample1))
+pre.lefse &lt;- rbind(sample1, data1,fill=T) %&gt;% t() %&gt;% na.omit() %&gt;% t()
+
+#writes table for LEfSe
+write.table(pre.lefse,file =paste(results_folder,&quot;lefse.txt&quot;,sep=&quot;&quot;),sep = &quot;\t&quot;,row.names = FALSE,col.names = FALSE,quote = FALSE)
+</code></pre>
+
+<pre><code class="r">opt.class &lt;- paste(&quot;-c&quot;, which(keepvars %in% class))
+opt.subclass &lt;- ifelse(is.na(subclass), &quot;&quot;, paste(&quot;-s&quot;, which(keepvars %in%
+subclass)))
+opt.subject &lt;- ifelse(is.na(subject), &quot;&quot;, paste(&quot;-u&quot;, which(keepvars %in%
+subject)))
+format.command &lt;- paste(paste(&quot;format_input.py &quot;,results_folder,&quot;lefse.txt &quot;,results_folder,&quot;lefse.in&quot;,sep=&quot;&quot;),
+opt.class, opt.subject, &quot;-o 1000000&quot;)
+format.command
+#&quot;format_input.py ~/Desktop/uparse_july/lefse.txt ~/Desktop/uparse_july/lefse.in -c 2 -u 1 -o 1000000&quot;
+system(format.command)
+</code></pre>
+
+<pre><code class="r">lefse.command &lt;- paste(paste(&quot;~/miniconda2/bin/python ~/lefse/run_lefse.py &quot;,results_folder,&quot;lefse.in &quot; ,results_folder, &quot;lefse.res&quot;,sep=&quot;&quot;),
+&quot;-a&quot;, anova.alpha, &quot;-w&quot;, wilcoxon.alpha, &quot;-l&quot;, lda.cutoff,
+&quot;-e&quot;, as.numeric(wilcoxon.within.subclass), &quot;-y&quot;, as.numeric(one.against.one),
+&quot;-s&quot;, mult.test.correction)
+lefse.command
+#&quot;~/miniconda2/bin/python ~/lefse/run_lefse.py ~/Desktop/uparse_july/lefse.in ~/Desktop/uparse_july/lefse.res -a 0.05 -w 0.05 -l 3 -e 1 -y 1 -s 0&quot;
+system(lefse.command) #this will print out the number of significant OTUs (make sure it's not 0)
+</code></pre>
+
+<pre><code class="r">lefse.out &lt;- read.table(paste(results_folder,&quot;lefse.res&quot;,sep=&quot;&quot;), header = FALSE, sep = &quot;\t&quot;)
+names(lefse.out)&lt;-c(&quot;taxon&quot;,&quot;log.max.pct&quot;,&quot;direction&quot;,&quot;lda&quot;,&quot;p.value&quot;)
+(lefse.out&lt;-na.omit(lefse.out))
+</code></pre>
+
+<pre><code class="r">Palette_LTBI_treatment &lt;- c(&quot;#377eb8&quot;,&quot;#984ea3&quot;,&quot;pink&quot;,&quot;blue&quot;) #color palette for plots
+if(length(unique(lefse.out$direction))&lt;3){
+lefse.out$lda[lefse.out$direction==unique(lefse.out$direction)[1]] &lt;-
+-1*lefse.out$lda[lefse.out$direction==unique(lefse.out$direction)[1]]
+}
+lefse.out$taxon&lt;-factor(lefse.out$taxon,levels=lefse.out$taxon[order(lefse.out$lda)])
+g1&lt;-ggplot(data=lefse.out,aes(x=taxon,y=lda,color=direction,fill=direction))+
+geom_bar(stat=&quot;identity&quot;)+
+coord_flip()+
+theme_base()
+if(length(unique(lefse.out$direction))&lt;3){
+g1&lt;-g1+scale_color_manual(values=c(Palette_LTBI_treatment))+
+scale_fill_manual(values=c(Palette_LTBI_treatment))
+}
+print(g1)
+</code></pre>
+
+<p>The abscissa shows the linear discriminant analysis (LDA) score for each OTU—a higher score means that the OTU is more important according to LEfSe to discriminate between IGRA+ and HRZE individuals:
+<img alt="Image of HRZE_treatment_lefse0.05" src="../img/HRZE_treatment_lefse0.05.png" /></p>
+<pre><code class="r">ltk&lt;-as.character(lefse.out$taxon)
+phy_ra_ltk&lt;-prune_taxa(ltk,phy.lefse)
+phy_ra_ltk_m&lt;-psmelt(phy_ra_ltk)
+
+phy_ra_ltk_m$OTU&lt;-factor(phy_ra_ltk_m$OTU, levels=lefse.out$taxon[order(lefse.out$lda)])
+
+g2&lt;-ggplot(phy_ra_ltk_m,aes(x=OTU,
+y=Abundance,color=TB_status,
+fill=TB_status))+
+geom_boxplot(position=position_dodge(),
+colour=&quot;black&quot;, # Use black outlines,
+size=.3,alpha=0.5) +      # Thinner lines
+theme_base()+  xlab(&quot;&quot;)+  coord_flip() +
+scale_y_continuous(limits = c(0,200))
+if(length(unique(lefse.out$direction))&lt;3){
+g2&lt;-g2+scale_color_manual(values=c(Palette_LTBI_treatment))+
+scale_fill_manual(values=c(Palette_LTBI_treatment))
+}
+print(g2)
+</code></pre>
+
+<p>Using ggplot's geom_boxplot function, we can plot the most significantly differentially changed OTUs for LTBI vs HRZE people. I left the outliers in just to highlight that they are there, although we removed them for the actual paper for aesthetic purposes:
+<img alt="Image of boxplot_HRZE_treatment_lefse0.05" src="../img/boxplot_HRZE_treatment_lefse0.05.png" /></p>
+<h2 id="part-4-principal-coordinates-analysis">Part 4: Principal Coordinates Analysis</h2>
+<pre><code class="r">phy_ord &lt;- ordinate(phyIGRA_pos_treatment, &quot;NMDS&quot;, &quot;bray&quot;)
+p &lt;- plot_ordination(phyIGRA_pos_treatment,phy_ord, color=&quot;TB_status&quot;)
+p + geom_point(size=4)
+
+Palette_LTBI_treatment &lt;- c(&quot;#377eb8&quot;,&quot;#984ea3&quot;) #set the color palette
+
+phy_ord &lt;- ordinate(phyIGRA_pos_treatment, &quot;NMDS&quot;, &quot;bray&quot;)
+p &lt;- plot_ordination(phyIGRA_pos_treatment,phy_ord, color=&quot;TB_status&quot;)
+p + geom_point(size=4) + theme(legend.text = element_text(size=15),
+axis.title.x = element_text(size=20),
+axis.title.y = element_text(size=20),
+axis.text.x = element_text(size=15),
+axis.text.y = element_text(size=15)) +
+scale_colour_manual(values=Palette_LTBI_treatment)
+</code></pre>
+
+<p>The Nonmetric Multidimensional Scaling (NMDS) output does not give traditional PCA % variance values, but is good for count data, and performs well separating people on HRZE and healthy LTBI controls:
+<img alt="Image of boxplot_NMDS_HRZE_LTBI" src="../img/NMDS_HRZE_LTBI.png" /></p>
+<h2 id="part-5-making-a-heatmap-of-the-most-differentially-abundant-otus">Part 5: Making a heatmap of the most differentially abundant OTUs</h2>
+<p>Heatmaps are my personal favorite way of looking at this type of data. Ideally one would put much more information than just a heatmap into a single figure, but let's start with making a heatmap of just the top 40 most differentially abundant OTUs, and then perform unsupervised hierarchical clustering.</p>
+<pre><code class="r">rst &lt;- varianceStabilizingTransformation(dig, blind=FALSE,fitType = &quot;parametric&quot;)
+sampleDists &lt;- dist( t( assay(rst) ) )
+sampleDists
+topVarGenes &lt;- head(order(rowVars(assay(rst)),decreasing=TRUE),40)
+mat &lt;- assay(rst)[ topVarGenes, ]
+mat &lt;- mat - rowMeans(mat)
+rst$days_ON_HRZE &lt;- as.numeric(rst$days_ON_HRZE)
+df &lt;- as.data.frame(colData(rst)[,c(&quot;TB_status&quot;,&quot;days_ON_HRZE&quot;,&quot;age&quot;,&quot;sex&quot;)]) #&quot;days_ON_HRZE&quot;,&quot;TB_status&quot;
+pheatmap(mat, annotation_col=df,clustering_distance_rows = &quot;correlation&quot;,
+clustering_method = &quot;ward.D2&quot;,show_colnames = F)
+</code></pre>
+
+<p><img alt="Image of HeatmapHRZE" src="../img/HeatmapHRZE.png" /></p>
+<h2 id="part-6-making-a-phylogenetic-tree-with-relative-otu-abundance-in-a-heatmap">Part 6: Making a phylogenetic tree with relative OTU abundance in a heatmap</h2>
+<p>People always ask me about individuals on treatment (HRZE) and what effect(s) there are on the Actinobacteria in the microbitoa. Interestingly, the major effects are in the Firmicutes, and as a Phylum, the Actinobacteria are largely untouched, with the exception of a species of Bifidobacterium. The plot below takes the phylogenetic tree of Actinobacteria (generated from make_phylogeny.py) and maps the relative abundance of each OTU on the tree in a heatmap.</p>
+<pre><code class="r">p_actino &lt;- subset_samples(phy,!is.na(IGRA) &amp; IGRA!=&quot;&quot;)
+p.species &lt;- subset_taxa(p_actino, Phylum==&quot;Actinobacteria&quot;)
+
+tr &lt;- phy_tree(p.species)
+spec &lt;- as.data.frame(get.tax(p.species))
+gt &lt;- ggtree(tr, branch.length = &quot;y&quot;) %&lt;+% spec
+gd &lt;- gt$data
+
+tt &lt;- get.otu.melt(p.species,filter.zero=FALSE)%&gt;%left_join(select(gd,otu=label,x,y),by=&quot;otu&quot;) %&gt;%
+arrange(TB_status) %&gt;% mutate(sample2=factor(sample,levels=unique(sample)),
+col=as.numeric(sample2),x.col=scales::rescale(col,to=c(1.3,2)))
+
+tt$TB_status&lt;-factor(tt$TB_status,levels=c(&quot;cured&quot;,&quot;treatment&quot;,&quot;healthy&quot;))
+Palette_actino &lt;- c(&quot;#e7298a&quot;,&quot;#984ea3&quot;,&quot;#377eb8&quot;)
+
+
+g1 &lt;- gt + geom_tippoint(data=gd$istip,aes(color=Genus),size=3) +
+geom_text(data=gd$istip,aes(label=Genus,x=x+0.001),hjust=-0.1,check_overlap = F) +
+geom_tile(data=tt,aes(x=x.col,y=y,fill=TB_status,alpha=pctseqs),position=&quot;dodge&quot;) +
+scale_alpha_continuous(trans=log_epsilon_trans(0.00001),aes(show.legend=Relative_Abundance)) +
+theme(legend.position=&quot;right&quot;)
+g1 + scale_fill_manual(values=Palette_actino)
+</code></pre>
+
+<p><img alt="Image of Actinobacteria phylogenetic tree" src="../img/actino_tree.png" /></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '..';</script>
+        <script src="../js/base.js"></script>
+        <script src="../search/require.js"></script>
+        <script src="../search/search.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </body>
+</html>
