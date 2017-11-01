@@ -83,8 +83,8 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#hrze-and-the-gut-microbiome">HRZE and the gut microbiome</a></li>
-            <li><a href="#part-1-load-packages-and-import-16s-microbiome-data-into-r-from-uparse-pipeline">Part 1: Load packages and import 16S microbiome data into R from uparse pipeline</a></li>
+        <li class="main active"><a href="#hrze-causes-dysbiosis">HRZE causes dysbiosis</a></li>
+            <li><a href="#jump-right-to-subsetting">Jump right to subsetting...</a></li>
             <li><a href="#part-2-subset-phyloseq-data-and-run-deseq-data-normalization">Part 2: Subset phyloseq data and run DESeq data normalization</a></li>
             <li><a href="#part-3-analyze-data-with-lefse">Part 3: Analyze data with LEfSe</a></li>
             <li><a href="#part-4-principal-coordinates-analysis">Part 4: Principal Coordinates Analysis</a></li>
@@ -94,59 +94,32 @@
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="hrze-and-the-gut-microbiome">HRZE and the gut microbiome</h1>
+<h1 id="hrze-causes-dysbiosis">HRZE causes dysbiosis</h1>
 <p>This tutorial is a walkthrough of the data analysis from:</p>
 <p>Antibiotic treatment for Tuberculosis induces a profound dysbiosis of the microbiome that persists long after therapy is completed</p>
 <p>Scientific Reports 7, Article number: 10767 (2017)</p>
 <p><a href="https://www.nature.com/articles/s41598-017-10346-6">doi: 10.1038/s41598-017-10346-6</a></p>
 <p>It shows how to take microbiome data and reproduce the figures from this paper.</p>
-<h2 id="part-1-load-packages-and-import-16s-microbiome-data-into-r-from-uparse-pipeline">Part 1: Load packages and import 16S microbiome data into R from uparse pipeline</h2>
-<pre><code class="r">setwd(&quot;~/Desktop/uparse_july/&quot;)
+<h2 id="jump-right-to-subsetting">Jump right to subsetting...</h2>
+<p>See the previous section (Treatment) for how to generate the Phyloseq object</p>
+<pre><code class="r">#IGRA positive vs cured (IGRA+ vs cured)
+phy_pos_cured &lt;- subset_samples(phy,!is.na(IGRA) &amp; IGRA!=&quot;negative&quot;)
+phy_pos_cured &lt;- subset_samples(phy_pos_cured,!is.na(IGRA) &amp; IGRA!=&quot;&quot;)
+phy_pos_cured &lt;- subset_samples(phy_pos_cured,!is.na(TB_status) &amp; TB_status!=&quot;treatment&quot;)
+phy_pos_cured &lt;- subset_samples(phy_pos_cured,!is.na(Group6_TB_category) &amp; Group6_TB_category!=&quot;family_contact&quot;)
+phy_pos_cured &lt;- subset_samples(phy_pos_cured,!is.na(Group6_TB_category) &amp; Group6_TB_category!=&quot;treatment&quot;)
+phy_pos_cured &lt;- subset_samples(phy_pos_cured, age &lt; 30)
 
-rm(list=ls())
-library(plyr);library(ggtree);library(phyloseq);library(ggplot2);library(scales);library(grid)
-library(Hmisc);library(gridExtra);library(scales);library(stringr);library(logistf)
-library(coxphf);library(reshape2);library(ifultools);library(car);library(vegan)
-library(gdata);library(chron);library(data.table);library(tidyr) #imports tibble
-library(ggplot2);library(yingtools2);library(gridExtra);library(lubridate);library(dplyr)
-library(&quot;pheatmap&quot;);library(&quot;RColorBrewer&quot;);library(&quot;genefilter&quot;);library(ggthemes)
-</code></pre>
+#DEseq2
+library(&quot;DESeq2&quot;)
 
-<h3 id="give-priority-to-specific-functions-for-annoying-namespace-reasons">Give priority to specific functions for annoying namespace reasons</h3>
-<pre><code class="r">select &lt;- dplyr::select
-summarize &lt;- dplyr::summarize
-rownames_to_column &lt;- tibble::rownames_to_column
-</code></pre>
+phy_DESeq &lt;- phy_pos_cured
 
-<h3 id="necessary-uparse-pipeline-output-files-for-downstream-16s-data-analysis">Necessary uparse pipeline output files for downstream 16S data analysis</h3>
-<pre><code class="r">#edit the $PATH to these files
-biom.file &lt;- &quot;~/Desktop/uparse_july/total.8.otu-tax.biom&quot;
-seq.file &lt;- &quot;~/Desktop/uparse_july/total.5.repset.fasta&quot;
-tax.file &lt;- &quot;~/Desktop/uparse_july/total.5.repset.fasta.blastn.refseq_rna.txt&quot;
-tree.file &lt;- &quot;~/Desktop/uparse_july/total.10.tree&quot;
-
-biom &lt;- import_biom(biom.file)
-seq &lt;- import_qiime(refseqfilename=seq.file)
-tree &lt;- yingtools2::read.tree.uparse(tree.file)
-
-#make tax object with BLAST names (skip this step to assign GreenGenes names instead)
-tax &lt;- yingtools2::read.blastn.file(tax.file) %&gt;% set.tax()
-</code></pre>
-
-<h3 id="import-and-setup-sample-data-metadata-for-each-person-in-the-study">Import and setup sample data (metadata for each person in the study)</h3>
-<pre><code class="r">data.file &lt;- &quot;TBRU_Metadata_May2017.csv&quot;
-data &lt;- read.csv(data.file,na.strings=c(&quot;N/A&quot;,&quot;99999&quot;)) %&gt;% mutate(sample=gsub(&quot;\\-&quot;,&quot;.&quot;,sample))
-samp &lt;- data %&gt;% data.frame()
-
-#fix some name issues in the biom file to make sample_names(biom) consistent
-sample_names(biom) &lt;- gsub(&quot;..pool749&quot;,&quot;&quot;,sample_names(biom))
-sample_names(biom) &lt;- gsub(&quot;\034&quot;,&quot;&quot;,sample_names(biom))
-</code></pre>
-
-<h3 id="merge-all-data-together-to-create-the-final-phyloseq-object">Merge all data together to create the final phyloseq object</h3>
-<pre><code class="r">phy &lt;- merge_phyloseq(biom,seq,tree)
-tax_table(phy) &lt;- tax
-sample_data(phy) &lt;- samp %&gt;% set.samp()
+t &lt;- get.tax(phy_DESeq) %&gt;% mutate(PhySpec=paste(Species,otu))
+taxa_names(phy_DESeq) &lt;- t$PhySpec
+taxa_names(phy_DESeq) &lt;- gsub(&quot; &quot;,&quot;_&quot;,taxa_names(phy_DESeq))
+taxa_names(phy_DESeq) &lt;- gsub(&quot;=&quot;,&quot;_&quot;,taxa_names(phy_DESeq))
+taxa_names(phy_DESeq) &lt;- gsub(&quot;;&quot;,&quot;_&quot;,taxa_names(phy_DESeq))
 </code></pre>
 
 <h2 id="part-2-subset-phyloseq-data-and-run-deseq-data-normalization">Part 2: Subset phyloseq data and run DESeq data normalization</h2>
