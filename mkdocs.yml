@@ -1,0 +1,5 @@
+site_name: TBRU
+pages:
+    - Home: index.md
+    - Treatment: Treatment.md
+    - About: about.md
