@@ -176,7 +176,7 @@ print(mtph.p.pca)
 dev.off()
 </code></pre>
 
-<p><a href="../img/metagenomics_Treatment/pca_plot.pdf">pcaplot</a></p>
+<p><img alt="pcaplot" src="../img/metagenomics_Treatment/pca_plot.png" /></p>
 <pre><code class="r">assignCols &lt;- function(names,selection) {
 mymap&lt;-list()
 availableCols &lt;-c(&quot;#000000&quot;, &quot;#FFFF00&quot;, &quot;#1CE6FF&quot;, &quot;#FF34FF&quot;, &quot;#FF4A46&quot;, &quot;#008941&quot;, &quot;#006FA6&quot;, &quot;#A30059&quot;,
@@ -217,6 +217,7 @@ print(p.bar)
 dev.off()
 </code></pre>
 
+<p><img alt="barplot" src="../img/metagenomics_Treatment/barplot_all.png" /></p>
 <pre><code class="r">#system(&quot;echo \&quot;$PATH\&quot; &gt; ~/.Renviron&quot;)
 system(&quot;echo $PATH&quot;)
 
@@ -292,6 +293,7 @@ dev.off()
 print(g1)
 </code></pre>
 
+<p><img alt="lefse" src="../img/metagenomics_Treatment/metaphlan_profiling_treatmentlda_plot_LEFSE.png" /></p>
 <pre><code class="r">ltk&lt;-as.character(lefse.out$taxon)
 phy_ra_ltk&lt;-prune_taxa(ltk,phy.lefse)
 phy_ra_ltk_m&lt;-psmelt(phy_ra_ltk)
@@ -318,6 +320,7 @@ print(g2)
 dev.off()
 </code></pre>
 
+<p><img alt="lefse_abundance" src="../img/metagenomics_Treatment/metaphlan_profiling_treatmentsignificant_LEFSE.cured.png" /></p>
 <pre><code class="r">phy_pos_cured_no_treat_ra_sset_sign&lt;-mtph_phy_ra_ltk
 sig_data_c&lt;-otu_table(phy_pos_cured_no_treat_ra_sset_sign)
 genotype_colors&lt;-rep(&quot;darkred&quot;,length(sample_data(phy_pos_cured_no_treat_ra_sset_sign)$TB_status))
@@ -344,7 +347,9 @@ padding = unit.c(unit(2, &quot;mm&quot;), grobWidth(textGrob(&quot;jnbkjsddjdjd_
 unit(c(2, 2), &quot;mm&quot;))
 draw(ht_list, padding = padding)
 dev.off()
-</code></pre></div>
+</code></pre>
+
+<p><img alt="heatmap" src="../img/metagenomics_Treatment/metaphlan_profiling_treatment.png" /></p></div>
         </div>
 
         <footer class="col-md-12">
