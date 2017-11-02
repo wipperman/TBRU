@@ -27,7 +27,7 @@
         }, 
         {
             "location": "/GettingStarted/", 
-            "text": "TBRU microbiome data analysis page\n\n\nGetting started\n\n\nMicrobiome data analysis seems daunting, but it is not. There are a few core set of skills that one must learn, but just like a mere 26 letters in the alphabet and a few general rules can be used to produce a masterpiece like James Joyce's Ulysses, the same is true for all next generation sequencing data analysis. The pipelines are straightforward, and once the learning curve has plateaued, they are a lot of fun! The same set of concepts can be applied to any sort of next generation data generation technique, ranging from 16S amplicon DNA sequencing, metagenomic DNA sequencing, RNAseq, metabolomics, and more! \n\n\nDataframes\n\n\nQiime\n\n\nDownload Qiime \nhere\n\n\nRStudio\n\n\nYou can download RStudio \nhere", 
+            "text": "TBRU microbiome data analysis page\n\n\nGetting started\n\n\nMicrobiome data analysis seems daunting, but it is not. There are a few core set of skills that one must learn, but just like a mere 26 letters in the alphabet and a few general rules can be used to produce a masterpiece like James Joyce's Ulysses, the same is true for all next generation sequencing data analysis. The pipelines are straightforward, and once the learning curve has plateaued, they are a lot of fun! The same set of concepts can be applied to any sort of next generation data generation technique, ranging from 16S amplicon DNA sequencing, metagenomic DNA sequencing, RNAseq, metabolomics, and more! \n\n\nDataframes\n\n\nQiime\n\n\nDownload Qiime \nhere\n\n\nRStudio\n\n\nYou can download RStudio \nhere\n\n\nUparse pipeline\n\n\nYou can read about and download steps to process 16S amplicon data on the drive5.com \nwebpage\n. There are other methods to generate OTUs, but this is the method we use.", 
             "title": "Getting Started"
         }, 
         {
@@ -54,6 +54,11 @@
             "location": "/GettingStarted/#rstudio", 
             "text": "You can download RStudio  here", 
             "title": "RStudio"
+        }, 
+        {
+            "location": "/GettingStarted/#uparse-pipeline", 
+            "text": "You can read about and download steps to process 16S amplicon data on the drive5.com  webpage . There are other methods to generate OTUs, but this is the method we use.", 
+            "title": "Uparse pipeline"
         }, 
         {
             "location": "/Treatment/", 
