@@ -103,10 +103,16 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#loading-the-data">Loading the data</a></li>
+        <li class="main "><a href="#import-the-metaphlan-data-to-phyloseq">Import the metaphlan data to phyloseq</a></li>
+        <li class="main "><a href="#principle-corrdinate-analysis">Principle corrdinate analysis</a></li>
+        <li class="main "><a href="#run-lefse-on-treatment-vs-ltbi">Run LEfSe on Treatment vs LTBI</a></li>
+        <li class="main "><a href="#make-a-heatmap-with-the-lefse-results">Make a heatmap with the LEfSe results</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
+<h2 id="loading-the-data">Loading the data</h2>
 <pre><code class="r">rm (list = ls())
 library(phyloseq);library(ggplot2);library(gridExtra);library(RColorBrewer);library(colorspace)
 library(lattice);library(plyr);library(KEGGREST);library(pracma);library(ggthemes);library(pheatmap)
@@ -139,6 +145,7 @@ mtph_taxmat &lt;-tax_table(mtph_taxmat)
 mtph_phy &lt;- phyloseq(mtph_otudata, mtph_taxmat)
 </code></pre>
 
+<h2 id="import-the-metaphlan-data-to-phyloseq">Import the metaphlan data to phyloseq</h2>
 <pre><code class="r">metadata.file &lt;- &quot;TBRU_Metadata_May2017.csv&quot;
 metadata &lt;- read.csv(metadata.file,na.strings=c(&quot;N/A&quot;,&quot;99999&quot;))
 metadata[is.na(metadata)]&lt;-&quot;99999&quot;
@@ -165,6 +172,7 @@ mtph_phyIGRA_pos_active.speclevel&lt;-prune_taxa(taxa_names(mtph_phyIGRA_pos_act
 taxa_names(mtph_phyIGRA_pos_active.speclevel)&lt;-do.call('rbind',strsplit(taxa_names(mtph_phyIGRA_pos_active.speclevel),&quot;\\|&quot;))[,7]
 </code></pre>
 
+<h2 id="principle-corrdinate-analysis">Principle corrdinate analysis</h2>
 <pre><code class="r">pdf(paste(mtph_results_folder,'pca_plot.pdf',sep=&quot;/&quot;),height = 7, width = 10)
 mtph_GP.ord &lt;- ordinate(mtph_phyIGRA_pos_active.speclevel, &quot;NMDS&quot;, &quot;bray&quot;)
 Palette_LTBI_treatment &lt;- c(&quot;#377eb8&quot;,&quot;#984ea3&quot;)
@@ -218,6 +226,7 @@ dev.off()
 </code></pre>
 
 <p><img alt="barplot" src="../img/metagenomics_Treatment/barplot_all.png" /></p>
+<h2 id="run-lefse-on-treatment-vs-ltbi">Run LEfSe on Treatment vs LTBI</h2>
 <pre><code class="r">#system(&quot;echo \&quot;$PATH\&quot; &gt; ~/.Renviron&quot;)
 system(&quot;echo $PATH&quot;)
 
@@ -321,6 +330,7 @@ dev.off()
 </code></pre>
 
 <p><img alt="lefse_abundance" src="../img/metagenomics_Treatment/metaphlan_profiling_treatmentsignificant_LEFSE.cured.png" /></p>
+<h2 id="make-a-heatmap-with-the-lefse-results">Make a heatmap with the LEfSe results</h2>
 <pre><code class="r">phy_pos_cured_no_treat_ra_sset_sign&lt;-mtph_phy_ra_ltk
 sig_data_c&lt;-otu_table(phy_pos_cured_no_treat_ra_sset_sign)
 genotype_colors&lt;-rep(&quot;darkred&quot;,length(sample_data(phy_pos_cured_no_treat_ra_sset_sign)$TB_status))
