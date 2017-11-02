@@ -1,6 +1,7 @@
 #!/bin/bash
 
 vsearch -fastx_filter total.fastq -fastaout total.1.filtered.fasta -fastq_maxee 1 -threads 8
+
 #usearch -derep_fulllength total.fasta -fastaout total.2.derep.fasta -sizeout -uc total.2a.derep.uc -threads 8
 vsearch -derep_fulllength total.1.filtered.fasta -output total.2.derep.fasta
 # # dereplicate seqs (headers become: >pool426.677C.RLP(28).bmt_21;size=38122)
