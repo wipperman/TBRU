@@ -109,6 +109,7 @@
             <li><a href="#rstudio">RStudio</a></li>
             <li><a href="#uparse-pipeline">Uparse pipeline</a></li>
             <li><a href="#all-about-phyloseq">All about Phyloseq!</a></li>
+            <li><a href="#conda-and-anaconda">Conda and Anaconda</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -124,7 +125,12 @@
 <h2 id="uparse-pipeline">Uparse pipeline</h2>
 <p>You can read about and download steps to process 16S amplicon data on the drive5.com <a href="https://www.drive5.com/uparse/">webpage</a>. There are other methods to generate OTUs, but this is the method we use.</p>
 <h2 id="all-about-phyloseq">All about Phyloseq!</h2>
-<p><a href="https://joey711.github.io/phyloseq/">Phyloseq</a> is a <a href="https://www.bioconductor.org/">Bioconductor</a> package that integrates all of the necessary types of data to describe a microbiome. Specifically, the sequence data, sample metadata, taxonomy information of each sequence, and a phylogenetic tree of the sequences are all easily integrated into one "phyloseq object". Extracting data from this object in R is simple, and it makes downstream analyses simple and reproducible.</p></div>
+<p><a href="https://joey711.github.io/phyloseq/">Phyloseq</a> is a <a href="https://www.bioconductor.org/">Bioconductor</a> package that integrates all of the necessary types of data to describe a microbiome. Specifically, the sequence data, sample metadata, taxonomy information of each sequence, and a phylogenetic tree of the sequences are all easily integrated into one "phyloseq object". Extracting data from this object in R is simple, and it makes downstream analyses simple and reproducible.</p>
+<h2 id="conda-and-anaconda">Conda and Anaconda</h2>
+<p>Conda is a package management system that helps you find and install new packages. Read more about it <a href="https://conda.io/docs/">here</a>. Conda is very easy to <a href="https://conda.io/docs/user-guide/install/index.html">install</a>.</p>
+<p>It is also easy to install Anaconda--see <a href="https://www.anaconda.com/download/#macos">here</a>. </p>
+<p>The miniconda version of python2.7 (miniconda2/bin/python) is required for LEfSe and some other microbiome tools. Installing conda and anaconda will likely modify your $PATH to make this the default, but if not, then be aware that when running any python scripts (e.g., run_lefse.py), you'll need to point to the directory containing the miniconda version of python2.7.</p>
+<p>You can find out the default python on your system by opening a terminal window and typing "which python".</p></div>
         </div>
 
         <footer class="col-md-12">
