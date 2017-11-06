@@ -108,7 +108,7 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#vsearch-fastx_filter-totalfastq-fastaout-total1filteredfasta-fastq_maxee-1-threads-8">vsearch -fastx_filter total.fastq -fastaout total.1.filtered.fasta -fastq_maxee 1 -threads 8</a></li>
-        <li class="main "><a href="#vsearch-derep_fulllength-total1filteredfasta-output-total2derepfasta">vsearch -derep_fulllength total.1.filtered.fasta -output total.2.derep.fasta</a></li>
+            <li><a href="#vsearch-derep_fulllength-total1filteredfasta-output-total2derepfasta">vsearch -derep_fulllength total.1.filtered.fasta -output total.2.derep.fasta</a></li>
         <li class="main "><a href="#usearch-sortbysize-total2derepfasta-minsize-2-fastaout-total3sizesortedfasta">usearch -sortbysize total.2.derep.fasta -minsize 2 -fastaout total.3.sizesorted.fasta</a></li>
         <li class="main "><a href="#usearch-cluster_otus-total3sizesortedfasta-otus-total4repset-rawfasta-uparseout-total4aotu-summarytxt-relabel-otu_-sizein-sizeout">usearch -cluster_otus total.3.sizesorted.fasta -otus total.4.repset-raw.fasta -uparseout total.4a.otu-summary.txt -relabel OTU_ -sizein -sizeout</a></li>
         <li class="main "><a href="#usearch-uchime2_ref-total4repset-rawfasta-db-databasesgoldfa-strand-plus-nonchimeras-total5repsetfasta-threads-8">usearch -uchime2_ref total.4.repset-raw.fasta -db ~/Databases/gold.fa -strand plus -nonchimeras total.5.repset.fasta -threads 8</a></li>
@@ -132,11 +132,11 @@
                 <div class="col-md-9" role="main">
 
 <h2 id="vsearch-fastx_filter-totalfastq-fastaout-total1filteredfasta-fastq_maxee-1-threads-8">vsearch -fastx_filter total.fastq -fastaout total.1.filtered.fasta -fastq_maxee 1 -threads 8</h2>
-<h2 id="vsearch-derep_fulllength-total1filteredfasta-output-total2derepfasta">vsearch -derep_fulllength total.1.filtered.fasta -output total.2.derep.fasta</h2>
+<h4 id="vsearch-derep_fulllength-total1filteredfasta-output-total2derepfasta">vsearch -derep_fulllength total.1.filtered.fasta -output total.2.derep.fasta</h4>
 <p>dereplicate seqs (headers become: &gt;pool426.677C.RLP(28).bmt_21;size=38122)
 use vsearch instead of usearch (32-bit) for large files.</p>
 <h1 id="_1"></h1>
-<h2 id="usearch-sortbysize-total2derepfasta-minsize-2-fastaout-total3sizesortedfasta">usearch -sortbysize total.2.derep.fasta -minsize 2 -fastaout total.3.sizesorted.fasta</h2>
+<h4 id="usearch-sortbysize-total2derepfasta-minsize-2-fastaout-total3sizesortedfasta">usearch -sortbysize total.2.derep.fasta -minsize 2 -fastaout total.3.sizesorted.fasta</h4>
 <p>sort by size (by looking at size=xxxx) and remove singletons</p>
 <h2 id="usearch-cluster_otus-total3sizesortedfasta-otus-total4repset-rawfasta-uparseout-total4aotu-summarytxt-relabel-otu_-sizein-sizeout">usearch -cluster_otus total.3.sizesorted.fasta -otus total.4.repset-raw.fasta -uparseout total.4a.otu-summary.txt -relabel OTU_ -sizein -sizeout</h2>
 <p>automatically removes de novo chimeras here (usearch7 and above); provides sequence rep set and otu classification summary; needs to have ';size=xxxx;' from derep step</p>
