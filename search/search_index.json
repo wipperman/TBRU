@@ -187,7 +187,7 @@
         }, 
         {
             "location": "/IGRA/", 
-            "text": "IGRA status and microbiome composition\n\n\nAdonis test\n\n\nThere are seemingly innumerable ways to query for differences in microbial community composition. Given the zero-inflated type of microbiome data, non-parametric analyses are most appropriate to ask if a statistical difference exists between two groups. In the case of IGRA status, we concluded that LTBI (being IGRA+) has no detectable effect on intestinal microbiome composition. Here are some of the ways we can use to reproduce that analysis.\n\n\n| | Df | Sum Sq | Mean Sq | F | N.Perm | Pr(\nF) |\nGroups | 1 | 0.02456 | 0.0245641 | 3.8261    | 999   | 0.05 * |\nResiduals | 99 | 0.63560 | 0.0064202 | | |", 
+            "text": "IGRA status and microbiome composition\n\n\nAdonis test\n\n\nThere are seemingly innumerable ways to query for differences in microbial community composition. Given the zero-inflated type of microbiome data, non-parametric analyses are most appropriate to ask if a statistical difference exists between two groups. In the case of IGRA status, we concluded that LTBI (being IGRA+) has no detectable effect on intestinal microbiome composition. Here are some of the ways we can use to reproduce that analysis.\n\n\n\n\n\n\n\n\n\n\nDf\n\n\nSum Sq\n\n\nMean Sq\n\n\nF\n\n\nN.Perm\n\n\nPr(\nF)\n\n\n\n\n\n\n\n\n\n\nGroups\n\n\n1\n\n\n0.02456\n\n\n0.0245641\n\n\n3.8261\n\n\n999\n\n\n0.05 *\n\n\n\n\n\n\nResiduals\n\n\n99\n\n\n0.63560\n\n\n0.0064202", 
             "title": "IGRA status"
         }, 
         {
@@ -197,7 +197,7 @@
         }, 
         {
             "location": "/IGRA/#adonis-test", 
-            "text": "There are seemingly innumerable ways to query for differences in microbial community composition. Given the zero-inflated type of microbiome data, non-parametric analyses are most appropriate to ask if a statistical difference exists between two groups. In the case of IGRA status, we concluded that LTBI (being IGRA+) has no detectable effect on intestinal microbiome composition. Here are some of the ways we can use to reproduce that analysis.  | | Df | Sum Sq | Mean Sq | F | N.Perm | Pr( F) |\nGroups | 1 | 0.02456 | 0.0245641 | 3.8261    | 999   | 0.05 * |\nResiduals | 99 | 0.63560 | 0.0064202 | | |", 
+            "text": "There are seemingly innumerable ways to query for differences in microbial community composition. Given the zero-inflated type of microbiome data, non-parametric analyses are most appropriate to ask if a statistical difference exists between two groups. In the case of IGRA status, we concluded that LTBI (being IGRA+) has no detectable effect on intestinal microbiome composition. Here are some of the ways we can use to reproduce that analysis.      Df  Sum Sq  Mean Sq  F  N.Perm  Pr( F)      Groups  1  0.02456  0.0245641  3.8261  999  0.05 *    Residuals  99  0.63560  0.0064202", 
             "title": "Adonis test"
         }, 
         {
