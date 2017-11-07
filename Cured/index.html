@@ -63,6 +63,10 @@
 <li class="active">
     <a href="./">Cured</a>
 </li>
+                            
+<li >
+    <a href="../IGRA/">IGRA status</a>
+</li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -91,7 +95,7 @@
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="../Treatment_metagenomics/">
+                        <a rel="prev" href="../IGRA/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -154,10 +158,6 @@ geoMeans &lt;- apply(counts(dig), 1, gm_mean)
 dig &lt;- estimateSizeFactors(dig, geoMeans = geoMeans)
 dig &lt;- estimateDispersions(dig)
 dig &lt;- DESeq(dig,fitType= &quot;local&quot;)
-
-# diagvst &lt;- getVarianceStabilizedData(dig)
-# dim(diagvst)
-# otu_table(phyIGRA_pos_treatment) &lt;- otu_table(diagvst, taxa_are_rows = TRUE)
 
 res &lt;- results(dig)
 #res$pfdr &lt;- p.adjust(res$pvalue,method=&quot;fdr&quot;)
