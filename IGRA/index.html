@@ -115,16 +115,17 @@
 
 <h1 id="igra-status-and-microbiome-composition">IGRA status and microbiome composition</h1>
 <h2 id="adonis-test">Adonis test</h2>
-<p>There are seemingly innumerable ways to query for differences in microbial community composition. Given the zero-inflated type of microbiome data, non-parametric analyses are most appropriate to ask if a statistical difference exists between two groups. In the case of IGRA status, we concluded that LTBI (being IGRA+) has no detectable effect on intestinal microbiome composition. Here are some of the ways we can use to reproduce that analysis.</p>
+<p>There are seemingly innumerable ways to query for differences in microbial community composition. Given the zero-inflated type of microbiome data, non-parametric analyses are most appropriate to ask if a statistical difference exists between two groups. In the case of IGRA status, we concluded that LTBI (being IGRA+) has no detectable effect on intestinal microbiome composition. What we formally did was a non-parametric multivariate ANOVA on the microbiome features between IGRA- and IGRA+ people.</p>
+<p>The following analysis compares 46 IGRA- and 55 IGRA+ people (data in the phy_NoTB_LTBI Phyloseq object). The</p>
 <pre><code class="r"># Calculate bray curtis distance matrix
-treat_bray &lt;- phyloseq::distance(phy_DESeq, method = &quot;bray&quot;)
+bray &lt;- phyloseq::distance(phy_NoTB_LTBI, method = &quot;bray&quot;)
 
 # make a data frame from the sample_data
-sampledf &lt;- data.frame(sample_data(phy_DESeq))
+sampledf &lt;- data.frame(sample_data(phy_NoTB_LTBI))
 
 # Adonis test
 library(vegan)
-adonis(treat_bray ~ IGRA + age + sex, data = sampledf)
+adonis(bray ~ IGRA + age + sex, data = sampledf) 
 </code></pre>
 
 <table>
