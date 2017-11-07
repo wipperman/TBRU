@@ -150,7 +150,7 @@ tree.file &lt;- &quot;~/Desktop/uparse_july/total.10.tree&quot;
 
 biom &lt;- import_biom(biom.file)
 seq &lt;- import_qiime(refseqfilename=seq.file)
-tree &lt;- yingtools2::read.tree.uparse(tree.file)
+tree &lt;- read.tree(text=scan(tree.file,what=character(),quiet=TRUE))
 
 #make tax object with BLAST names (skip this step to assign GreenGenes names instead)
 tax &lt;- yingtools2::read.blastn.file(tax.file) %&gt;% set.tax()
