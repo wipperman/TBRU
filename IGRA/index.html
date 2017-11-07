@@ -116,6 +116,17 @@
 <h1 id="igra-status-and-microbiome-composition">IGRA status and microbiome composition</h1>
 <h2 id="adonis-test">Adonis test</h2>
 <p>There are seemingly innumerable ways to query for differences in microbial community composition. Given the zero-inflated type of microbiome data, non-parametric analyses are most appropriate to ask if a statistical difference exists between two groups. In the case of IGRA status, we concluded that LTBI (being IGRA+) has no detectable effect on intestinal microbiome composition. Here are some of the ways we can use to reproduce that analysis.</p>
+<pre><code class="r"># Calculate bray curtis distance matrix
+treat_bray &lt;- phyloseq::distance(phy_DESeq, method = &quot;bray&quot;)
+
+# make a data frame from the sample_data
+sampledf &lt;- data.frame(sample_data(phy_DESeq))
+
+# Adonis test
+library(vegan)
+adonis(treat_bray ~ IGRA + age + sex, data = sampledf)
+</code></pre>
+
 <table>
 <thead>
 <tr>
@@ -176,6 +187,11 @@
 </tr>
 </tbody>
 </table>
+<p>Signif. codes:  0 ‘<em><strong>’ 0.001 ‘</strong>’ 0.01 ‘</em>’ 0.05 ‘.’ 0.1 ‘ ’ 1</p>
+<pre><code class="r">beta &lt;- betadisper(treat_bray, sampledf$IGRA)
+permutest(beta)
+</code></pre>
+
 <table>
 <thead>
 <tr>
