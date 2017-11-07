@@ -189,6 +189,7 @@ adonis(bray ~ IGRA + age + sex, data = sampledf)
 </tbody>
 </table>
 <p>Signif. codes:  0 ‘<em><strong>’ 0.001 ‘</strong>’ 0.01 ‘</em>’ 0.05 ‘.’ 0.1 ‘ ’ 1</p>
+<p>We can see that if anything, age is the major factor that contributes to variation between IGRA- and IGRA+ individuals. In fact, age has been described as a major contributer to microbiome variation (for a variety of reasons), thus, we made sure to control for age in our study.</p>
 <pre><code class="r">beta &lt;- betadisper(treat_bray, sampledf$IGRA)
 permutest(beta)
 </code></pre>
