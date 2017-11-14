@@ -241,7 +241,8 @@ scale_fill_manual(values = mycol[[1]],breaks=mycol[[2]])
 barplot
 </code></pre>
 
-<p><img alt="Image of HRZE_barplot" src="../img/Treatment/HRZE_LTBI_barplot.png" /></p>
+<p><img alt="Image of HRZE_barplot" src="../img/Treatment/HRZE_LTBI_barplot.png" />
+<a href="https://www.nature.com/articles/s41598-017-10346-6">Figure 2B from paper</a></p>
 <h3 id="load-the-deseq2-package-make-taxa-names-more-friendly">Load the DESeq2 package, make taxa names more friendly</h3>
 <p>Downstream plotting of log2 differential abundance data from the DESeq output is made easier when the Species name and the specific OTU number are merged, since multiple OTUs can have the same name</p>
 <pre><code class="r">library(&quot;DESeq2&quot;)
@@ -410,7 +411,8 @@ print(g2)
 </code></pre>
 
 <p>Using ggplot's geom_boxplot function, we can plot the most significantly differentially changed OTUs for LTBI vs HRZE people. I left the outliers in just to highlight that they are there, although we removed them for the actual paper for aesthetic purposes:
-<img alt="Image of boxplot_HRZE_treatment_lefse0.05" src="../img/Treatment/boxplot_HRZE_treatment_lefse0.05.png" /></p>
+<img alt="Image of boxplot_HRZE_treatment_lefse0.05" src="../img/Treatment/boxplot_HRZE_treatment_lefse0.05.png" />
+<a href="https://www.nature.com/articles/s41598-017-10346-6">Figure 2D from paper</a></p>
 <h2 id="part-4-principal-coordinate-analysis">Part 4: Principal Coordinate Analysis</h2>
 <pre><code class="r">phy_ord &lt;- ordinate(phyIGRA_pos_treatment, &quot;NMDS&quot;, &quot;bray&quot;)
 p &lt;- plot_ordination(phyIGRA_pos_treatment,phy_ord, color=&quot;TB_status&quot;)
@@ -429,7 +431,8 @@ scale_colour_manual(values=Palette_LTBI_treatment)
 </code></pre>
 
 <p>The Nonmetric Multidimensional Scaling (NMDS) output does not give traditional PCA % variance values, but is good for count data, and performs well separating people on HRZE and healthy LTBI controls:
-<img alt="Image of boxplot_NMDS_HRZE_LTBI" src="../img/Treatment/NMDS_HRZE_LTBI.png" /></p>
+<img alt="Image of boxplot_NMDS_HRZE_LTBI" src="../img/Treatment/NMDS_HRZE_LTBI.png" />
+<a href="https://www.nature.com/articles/s41598-017-10346-6">Figure 2A from paper</a></p>
 <h2 id="part-5-making-a-heatmap">Part 5: Making a heatmap</h2>
 <p>Heatmaps are my personal favorite way of looking at this type of data. Ideally one would put much more information than just a heatmap into a single figure, but let's start with making a heatmap of just the top 40 most differentially abundant OTUs, and then perform unsupervised hierarchical clustering.</p>
 <pre><code class="r">rst &lt;- varianceStabilizingTransformation(dig, blind=FALSE,fitType = &quot;parametric&quot;)
@@ -444,7 +447,8 @@ pheatmap(mat, annotation_col=df,clustering_distance_rows = &quot;correlation&quo
 clustering_method = &quot;ward.D2&quot;,show_colnames = F)
 </code></pre>
 
-<p><img alt="Image of HeatmapHRZE" src="../img/Treatment/HeatmapHRZE.png" /></p>
+<p><img alt="Image of HeatmapHRZE" src="../img/Treatment/HeatmapHRZE.png" />
+<a href="https://www.nature.com/articles/s41598-017-10346-6">Figure 2C from paper</a></p>
 <h2 id="part-6-making-a-phylogenetic-tree-heatmap">Part 6: Making a phylogenetic tree + heatmap</h2>
 <p>People always ask me about individuals on treatment (HRZE) and what effect(s) there are on the Actinobacteria in the microbitoa. Interestingly, the major effects are in the Firmicutes, and as a Phylum, the Actinobacteria are largely untouched, with the exception of a species of Bifidobacterium. The plot below takes the phylogenetic tree of Actinobacteria (generated from make_phylogeny.py) and maps the relative abundance of each OTU on the tree in a heatmap.</p>
 <pre><code class="r">p_actino &lt;- subset_samples(phy,!is.na(IGRA) &amp; IGRA!=&quot;&quot;)
@@ -471,7 +475,8 @@ theme(legend.position=&quot;right&quot;)
 g1 + scale_fill_manual(values=Palette_actino)
 </code></pre>
 
-<p><img alt="Image of Actinobacteria phylogenetic tree" src="../img/Treatment/actino_tree.png" /></p></div>
+<p><img alt="Image of Actinobacteria phylogenetic tree" src="../img/Treatment/actino_tree.png" />
+<a href="https://www.nature.com/articles/s41598-017-10346-6">Supplementry Figure from paper</a></p></div>
         </div>
 
         <footer class="col-md-12">
