@@ -192,7 +192,7 @@ print(mtph.p.pca)
 dev.off()
 </code></pre>
 
-<p><img alt="pcaplot" src="../img/metaphlan_profilingpca_plot_cured_NMDS.png" /></p>
+<p><img alt="pcaplot" src="../img/metagenomics_Cured/metaphlan_profilingpca_plot_cured_NMDS.png" /></p>
 <pre><code class="r">assignCols &lt;- function(names,selection) {
   mymap&lt;-list()
   availableCols &lt;-c(&quot;#000000&quot;, &quot;#FFFF00&quot;, &quot;#1CE6FF&quot;, &quot;#FF34FF&quot;, &quot;#FF4A46&quot;, &quot;#008941&quot;, &quot;#006FA6&quot;, &quot;#A30059&quot;,
@@ -233,7 +233,7 @@ print(p.bar)
 dev.off()
 </code></pre>
 
-<p><img alt="pcaplot" src="../img/metaphlan_profilingbarplot_all.png" /></p>
+<p><img alt="pcaplot" src="../img/metagenomics_Cured/metaphlan_profilingbarplot_all.png" /></p>
 <h2 id="run-lefse-on-cured-vs-ltbi">Run LEfSe on Cured vs LTBI</h2>
 <pre><code class="r">system(&quot;echo $PATH&quot;)
 
@@ -319,7 +319,7 @@ print(g1)
 dev.off()
 </code></pre>
 
-<p><img alt="pcaplot" src="../img/metaphlan_profilinglda_plot_LEFSE.png" /></p>
+<p><img alt="pcaplot" src="../img/metagenomics_Cured/metaphlan_profilinglda_plot_LEFSE.png" /></p>
 <pre><code class="r">ltk&lt;-as.character(lefse.out$taxon)
 phy_ra_ltk&lt;-prune_taxa(ltk,phy.lefse)
 phy_ra_ltk_m&lt;-psmelt(phy_ra_ltk)
@@ -346,7 +346,7 @@ print(g2)
 dev.off()
 </code></pre>
 
-<p><img alt="pcaplot" src="../img/metaphlan_profilingsignificant_LEFSE.png" /></p></div>
+<p><img alt="pcaplot" src="../img/metagenomics_Cured/metaphlan_profilingsignificant_LEFSE.png" /></p></div>
         </div>
 
         <footer class="col-md-12">
