@@ -134,9 +134,9 @@ mainDir &lt;- &quot;../metagenomics/&quot;
 subDir &lt;- &quot;metaphlan_profiling_cured&quot;
 dir.create(file.path(mainDir, subDir), showWarnings = TRUE,  recursive = TRUE)
 results_folder &lt;- paste(mainDir,subDir,sep=&quot;&quot;)
-````
-```{r}
-mtph_subDir &lt;- &quot;metaphlan_profiling/&quot;
+</code></pre>
+
+<pre><code class="r">mtph_subDir &lt;- &quot;metaphlan_profiling/&quot;
 dir.create(file.path(mainDir, mtph_subDir), showWarnings = TRUE,  recursive = TRUE)
 mtph_results_folder &lt;- paste(mainDir,mtph_subDir,sep=&quot;&quot;)
 mtph_dat &lt;- read.csv(&quot;../tbru_ss_data/metaphlan2_taxonomic_table_joined.tsv&quot;,sep=&quot;\t&quot;)
