@@ -76,6 +76,10 @@
 <li class="active">
     <a href="./">Treatment</a>
 </li>
+                            
+<li >
+    <a href="../Cured_metagenomics/">Cured</a>
+</li>
                         </ul>
                     </li>
                     <li >
@@ -95,7 +99,7 @@
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="../about/">
+                        <a rel="prev" href="../Cured_metagenomics/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -177,7 +181,7 @@ taxa_names(mtph_phyIGRA_pos_active.speclevel)&lt;-do.call('rbind',strsplit(taxa_
 </code></pre>
 
 <h2 id="principle-corrdinate-analysis">Principle corrdinate analysis</h2>
-<pre><code class="r">pdf(paste(mtph_results_folder,'pca_plot.pdf',sep=&quot;/&quot;),height = 7, width = 10)
+<pre><code class="r">pdf(paste(mtph_results_folder,'pca_plot_treatment.pdf',sep=&quot;/&quot;),height = 7, width = 10)
 mtph_GP.ord &lt;- ordinate(mtph_phyIGRA_pos_active.speclevel, &quot;NMDS&quot;, &quot;bray&quot;)
 Palette_LTBI_treatment &lt;- c(&quot;#377eb8&quot;,&quot;#984ea3&quot;)
 mtph.p.pca &lt;- plot_ordination(mtph_phyIGRA_pos_active.speclevel, mtph_GP.ord, type=&quot;samples&quot;,
@@ -231,8 +235,7 @@ dev.off()
 
 <p><img alt="barplot" src="../img/metagenomics_Treatment/barplot_all.png" /></p>
 <h2 id="run-lefse-on-treatment-vs-ltbi">Run LEfSe on Treatment vs LTBI</h2>
-<pre><code class="r">#system(&quot;echo \&quot;$PATH\&quot; &gt; ~/.Renviron&quot;)
-system(&quot;echo $PATH&quot;)
+<pre><code class="r">system(&quot;echo $PATH&quot;)
 
 # # #aquire sample data from phy
 phy.lefse&lt;-mtph_phyIGRA_pos_active.speclevel

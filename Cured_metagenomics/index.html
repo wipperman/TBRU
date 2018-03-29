@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Cured - TBRU</title>
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="..">TBRU</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">16S data <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../GettingStarted/">Getting Started</a>
+</li>
+                            
+<li >
+    <a href="../Treatment/">Treatment</a>
+</li>
+                            
+<li >
+    <a href="../Cured/">Cured</a>
+</li>
+                            
+<li >
+    <a href="../IGRA/">IGRA status</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Metagenomics <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../Treatment_metagenomics/">Treatment</a>
+</li>
+                            
+<li class="active">
+    <a href="./">Cured</a>
+</li>
+                        </ul>
+                    </li>
+                    <li >
+                        <a href="../about/">About</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="../Treatment_metagenomics/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../about/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#loading-the-data">Loading the data</a></li>
+        <li class="main "><a href="#principle-corrdinate-analysis">Principle corrdinate analysis</a></li>
+        <li class="main "><a href="#run-lefse-on-cured-vs-ltbi">Run LEfSe on Cured vs LTBI</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h2 id="loading-the-data">Loading the data</h2>
+<pre><code class="r">rm (list = ls())
+library(&quot;phyloseq&quot;);library(&quot;ggplot2&quot;);library(&quot;gridExtra&quot;);library(&quot;RColorBrewer&quot;);library(&quot;colorspace&quot;);
+library(&quot;lattice&quot;);library(&quot;plyr&quot;);library(&quot;pracma&quot;);library(&quot;ggthemes&quot;);library(&quot;pheatmap&quot;);library(&quot;ComplexHeatmap&quot;);
+library(&quot;BiocParallel&quot;);library(&quot;genefilter&quot;);library(&quot;DESeq2&quot;);library(&quot;tidyr&quot;);library(&quot;viridis&quot;);library(data.table);
+library(&quot;KEGGREST&quot;)
+
+setwd(&quot;~/Desktop/metagenomics/Jan04_17_results&quot;)
+
+register(MulticoreParam(30))
+asinTransform &lt;- function(p) { asin(sqrt(p)) }
+
+mainDir &lt;- &quot;../metagenomics/&quot;
+subDir &lt;- &quot;metaphlan_profiling_cured&quot;
+dir.create(file.path(mainDir, subDir), showWarnings = TRUE,  recursive = TRUE)
+results_folder &lt;- paste(mainDir,subDir,sep=&quot;&quot;)
+````
+```{r}
+mtph_subDir &lt;- &quot;metaphlan_profiling/&quot;
+dir.create(file.path(mainDir, mtph_subDir), showWarnings = TRUE,  recursive = TRUE)
+mtph_results_folder &lt;- paste(mainDir,mtph_subDir,sep=&quot;&quot;)
+mtph_dat &lt;- read.csv(&quot;../tbru_ss_data/metaphlan2_taxonomic_table_joined.tsv&quot;,sep=&quot;\t&quot;)
+mtph &lt;-mtph_dat
+rownames(mtph) &lt;-mtph$X.SampleID
+mtph$X.SampleID&lt;-NULL
+mtph_otudata &lt;-otu_table(mtph,taxa_are_rows = TRUE)
+mtph_taxmat &lt;- matrix(sample(letters, nrow(mtph_otudata)/10, replace = TRUE), nrow = nrow(mtph_otudata), ncol = 7)
+rownames(mtph_taxmat) &lt;- rownames(mtph_otudata)
+colnames(mtph_taxmat) &lt;- c(&quot;Domain&quot;, &quot;Phylum&quot;, &quot;Class&quot;, &quot;Order&quot;, &quot;Family&quot;, &quot;Genus&quot;, &quot;Species&quot;)
+mtph_taxmat &lt;-tax_table(mtph_taxmat)
+mtph_phy &lt;- phyloseq(mtph_otudata, mtph_taxmat)
+
+## Import the metaphlan data to phyloseq
+```{r}
+metadata.file &lt;- &quot;../tbru_ss_data/TBRU_Metadata_May2017.csv&quot;
+metadata &lt;- read.csv(metadata.file,na.strings=c(&quot;N/A&quot;,&quot;99999&quot;)) 
+metadata[is.na(metadata)]&lt;-&quot;99999&quot;
+metadata$sample&lt;-gsub(&quot;-&quot;,&quot;.&quot;,metadata$sample)
+samp &lt;- metadata %&gt;% data.frame() 
+
+rownames(samp)&lt;-metadata$sample
+snames&lt;-as.data.frame(do.call('rbind',strsplit(sample_names(mtph_phy),&quot;_&quot;)))[,1]
+sample_names(mtph_phy)&lt;-snames
+sample_data(mtph_phy)&lt;-samp
+
+# subsettings
+mtph_phy_pos_cured_no_treat&lt;-subset_samples(mtph_phy,!is.na(TB_status) &amp; TB_status!=&quot;treatment&quot;)
+mtph_phy_pos_cured_no_treat &lt;- subset_samples(mtph_phy_pos_cured_no_treat,!is.na(Group6_TB_category) &amp; Group6_TB_category!=&quot;family_member&quot;)
+
+# keep only &lt;38 years old in age
+mtph_phy_pos_cured_no_treat &lt;- subset_samples(mtph_phy_pos_cured_no_treat,age&lt;=38)
+sample_data(mtph_phy_pos_cured_no_treat)$TB_status &lt;- relevel(sample_data(mtph_phy_pos_cured_no_treat)$TB_status,&quot;healthy&quot;)
+
+splitted_names_tbru&lt;-strsplit(taxa_names(mtph_phy_pos_cured_no_treat),&quot;\\|&quot;)
+splitted_names_tbru_length&lt;-lengths(splitted_names_tbru)
+taxa_names(mtph_phy_pos_cured_no_treat)[splitted_names_tbru_length==7]
+mtph_phy_pos_cured_no_treat.speclevel&lt;-prune_taxa(taxa_names(mtph_phy_pos_cured_no_treat)[splitted_names_tbru_length==7],
+                                                  mtph_phy_pos_cured_no_treat)
+taxa_names(mtph_phy_pos_cured_no_treat.speclevel)&lt;-do.call('rbind',strsplit(taxa_names(mtph_phy_pos_cured_no_treat.speclevel),&quot;\\|&quot;))[,7]
+</code></pre>
+
+<h2 id="principle-corrdinate-analysis">Principle corrdinate analysis</h2>
+<pre><code class="r">pdf(paste(mtph_results_folder,'pca_plot_cured_NMDS.pdf',sep=&quot;&quot;),height = 7, width = 10)
+mtph_GP.ord &lt;- ordinate(mtph_phy_pos_cured_no_treat, &quot;NMDS&quot;, &quot;bray&quot;)
+mtph.p.pca &lt;- plot_ordination(mtph_phy_pos_cured_no_treat, mtph_GP.ord, type=&quot;samples&quot;, 
+                              color=&quot;TB_status&quot;) 
+Palette_LTBI_cured &lt;- c(&quot;#377eb8&quot;,&quot;#e7298a&quot;)
+mtph.p.pca &lt;- mtph.p.pca + geom_point(size=4)+
+  theme_base()+
+  scale_color_manual(values=c(Palette_LTBI_cured))
+print(mtph.p.pca)
+dev.off()
+</code></pre>
+
+<p><img alt="pcaplot" src="../img/metagenomics_Cured/pca_plot.png" /></p>
+<pre><code class="r">assignCols &lt;- function(names,selection) {
+  mymap&lt;-list()
+  availableCols &lt;-c(&quot;#000000&quot;, &quot;#FFFF00&quot;, &quot;#1CE6FF&quot;, &quot;#FF34FF&quot;, &quot;#FF4A46&quot;, &quot;#008941&quot;, &quot;#006FA6&quot;, &quot;#A30059&quot;,
+                    &quot;#FFDBE5&quot;, &quot;#7A4900&quot;, &quot;#0000A6&quot;, &quot;#63FFAC&quot;, &quot;#B79762&quot;, &quot;#004D43&quot;, &quot;#8FB0FF&quot;, &quot;#997D87&quot;,
+                    &quot;#5A0007&quot;, &quot;#809693&quot;, &quot;#FEFFE6&quot;, &quot;#1B4400&quot;, &quot;#4FC601&quot;, &quot;#3B5DFF&quot;, &quot;#4A3B53&quot;, &quot;#FF2F80&quot;,
+                    &quot;#61615A&quot;, &quot;#BA0900&quot;, &quot;#6B7900&quot;, &quot;#00C2A0&quot;, &quot;#FFAA92&quot;, &quot;#FF90C9&quot;, &quot;#B903AA&quot;, &quot;#D16100&quot;,
+                    &quot;#DDEFFF&quot;, &quot;#000035&quot;, &quot;#7B4F4B&quot;, &quot;#A1C299&quot;, &quot;#300018&quot;, &quot;#0AA6D8&quot;, &quot;#013349&quot;, &quot;#00846F&quot;,
+                    &quot;#372101&quot;, &quot;#FFB500&quot;, &quot;#C2FFED&quot;, &quot;#A079BF&quot;, &quot;#CC0744&quot;, &quot;#C0B9B2&quot;, &quot;#C2FF99&quot;, &quot;#001E09&quot;,
+                    &quot;#00489C&quot;, &quot;#6F0062&quot;, &quot;#0CBD66&quot;, &quot;#EEC3FF&quot;, &quot;#456D75&quot;, &quot;#B77B68&quot;, &quot;#7A87A1&quot;, &quot;#788D66&quot;,
+                    &quot;#885578&quot;, &quot;#FAD09F&quot;, &quot;#FF8A9A&quot;, &quot;#D157A0&quot;, &quot;#BEC459&quot;, &quot;#456648&quot;, &quot;#0086ED&quot;, &quot;#886F4C&quot;,
+                    &quot;#34362D&quot;, &quot;#B4A8BD&quot;, &quot;#00A6AA&quot;, &quot;#452C2C&quot;, &quot;#636375&quot;, &quot;#A3C8C9&quot;, &quot;#FF913F&quot;, &quot;#938A81&quot;,
+                    &quot;#575329&quot;, &quot;#00FECF&quot;, &quot;#B05B6F&quot;, &quot;#8CD0FF&quot;, &quot;#3B9700&quot;, &quot;#04F757&quot;, &quot;#C8A1A1&quot;, &quot;#1E6E00&quot;,
+                    &quot;#7900D7&quot;, &quot;#A77500&quot;, &quot;#6367A9&quot;, &quot;#A05837&quot;, &quot;#6B002C&quot;, &quot;#772600&quot;, &quot;#D790FF&quot;, &quot;#9B9700&quot;,
+                    &quot;#549E79&quot;, &quot;#FFF69F&quot;, &quot;#201625&quot;, &quot;#72418F&quot;, &quot;#BC23FF&quot;, &quot;#99ADC0&quot;, &quot;#3A2465&quot;, &quot;#922329&quot;,
+                    &quot;#5B4534&quot;, &quot;#FDE8DC&quot;, &quot;#404E55&quot;, &quot;#0089A3&quot;, &quot;#CB7E98&quot;, &quot;#A4E804&quot;, &quot;#324E72&quot;, &quot;#6A3A4C&quot;,
+                    &quot;#83AB58&quot;, &quot;#001C1E&quot;, &quot;#D1F7CE&quot;, &quot;#004B28&quot;, &quot;#C8D0F6&quot;, &quot;#A3A489&quot;, &quot;#806C66&quot;, &quot;#222800&quot;,
+                    &quot;#BF5650&quot;, &quot;#E83000&quot;, &quot;#66796D&quot;, &quot;#DA007C&quot;, &quot;#FF1A59&quot;, &quot;#8ADBB4&quot;, &quot;#1E0200&quot;, &quot;#5B4E51&quot;,
+                    &quot;#C895C5&quot;, &quot;#320033&quot;, &quot;#FF6832&quot;, &quot;#66E1D3&quot;, &quot;#CFCDAC&quot;, &quot;#D0AC94&quot;, &quot;#7ED379&quot;, &quot;#012C58&quot;)
+  mymap[[1]]&lt;-rev(availableCols[match(intersect(names,selection),names)])
+  mymap[[2]]&lt;-intersect(names,selection)
+  mymap
+};
+most_abundant_number &lt;-40
+topN =  most_abundant_number
+most_abundant_taxa = sort(taxa_sums(mtph_phy_pos_cured_no_treat.speclevel), TRUE)[1:topN]
+GP = prune_taxa(names(most_abundant_taxa), mtph_phy_pos_cured_no_treat.speclevel)
+mGPr &lt;- psmelt(GP)
+mycol &lt;- assignCols(unique(mGPr$OTU),unique(mGPr$OTU))
+pdf(paste(results_folder,'barplot_all.pdf',sep=&quot;&quot;),height = 7, width = 10)
+p.bar&lt;-ggplot(data=mGPr,aes(Patient.ID, Abundance, fill=OTU))+
+  geom_bar(stat = &quot;identity&quot;) +
+  theme_base()+
+  theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+  scale_fill_manual(values = mycol[[1]],breaks=mycol[[2]]) +
+  facet_wrap(~TB_status,scales=&quot;free&quot;)+
+  xlab(&quot;&quot;)
+print(p.bar)
+dev.off()
+</code></pre>
+
+<h2 id="run-lefse-on-cured-vs-ltbi">Run LEfSe on Cured vs LTBI</h2>
+<pre><code class="r">system(&quot;echo $PATH&quot;)
+
+# # #aquire sample data from phy
+phy.lefse&lt;-mtph_phy_pos_cured_no_treat.speclevel
+class &lt;- &quot;TB_status&quot;
+subclass&lt;-FALSE
+subject&lt;-&quot;sample&quot;
+anova.alpha&lt;-0.05
+wilcoxon.alpha&lt;-0.05
+lda.cutoff&lt;-2.0
+wilcoxon.within.subclass &lt;- TRUE
+one.against.one &lt;- FALSE 
+mult.test.correction &lt;- 0 
+make.lefse.plots &lt;- FALSE
+by_otus &lt;- FALSE
+# 
+sample.data &lt;- phyloseq::sample_data(phy.lefse) %&gt;% data.frame(stringsAsFactors = FALSE)
+sample.data$sample &lt;- rownames(sample.data)
+# 
+keepvars &lt;- c(&quot;sample&quot;,&quot;TB_status&quot;)
+keepvars &lt;- unique(keepvars[!is.na(keepvars)])
+lefse.samp &lt;- sample.data[, keepvars]
+# 
+sample0 &lt;- t(lefse.samp) %&gt;% as.matrix()
+colnames(sample0) &lt;- sample0[1,]
+sample0 &lt;- as.data.frame(sample0)
+# 
+data0 &lt;- otu_table(phy.lefse) %&gt;% as.data.frame()
+data1 &lt;- data0 %&gt;% as.data.table(keep.rownames=T)
+sample1 &lt;- sample0 %&gt;% as.data.table(keep.rownames=T)
+common &lt;- intersect(colnames(data1), colnames(sample1))
+pre.lefse &lt;- rbind(sample1, data1,fill=T) %&gt;% t() %&gt;% na.omit() %&gt;% t()
+# 
+write.table(pre.lefse,file =paste(results_folder,&quot;lefse.txt&quot;,sep=&quot;&quot;),sep = &quot;\t&quot;,row.names = FALSE,col.names = FALSE,quote = FALSE)
+# 
+opt.class &lt;- paste(&quot;-c&quot;, which(keepvars %in% class))
+opt.subclass &lt;- ifelse(is.na(subclass), &quot;&quot;, paste(&quot;-s&quot;, which(keepvars %in% 
+                                                                subclass)))
+opt.subject &lt;- ifelse(is.na(subject), &quot;&quot;, paste(&quot;-u&quot;, which(keepvars %in% 
+                                                              subject)))
+format.command &lt;- paste(paste(&quot;~/miniconda2/bin/python ~/lefse/format_input.py &quot;,results_folder,&quot;lefse.txt &quot;,results_folder,&quot;lefse.in&quot;,sep=&quot;&quot;), 
+                        opt.class, opt.subject, &quot;-o 1000000&quot;)
+system(format.command)
+# 
+lefse.command &lt;- paste(paste(&quot;run_lefse.py &quot;,results_folder,&quot;lefse.in &quot; ,results_folder, &quot;lefse.res&quot;,sep=&quot;&quot;), 
+                       &quot;-a&quot;, anova.alpha, &quot;-w&quot;, wilcoxon.alpha, &quot;-l&quot;, lda.cutoff, 
+                       &quot;-e&quot;, as.numeric(wilcoxon.within.subclass), &quot;-y&quot;, as.numeric(one.against.one), 
+                       &quot;-s&quot;, mult.test.correction)
+lefse.command
+system(lefse.command)
+
+
+lefse.out &lt;- read.table(paste(results_folder,&quot;lefse.res&quot;,sep=&quot;&quot;), header = FALSE, sep = &quot;\t&quot;)
+names(lefse.out)&lt;-c(&quot;taxon&quot;,&quot;log.max.pct&quot;,&quot;direction&quot;,&quot;lda&quot;,&quot;p.value&quot;)
+(lefse.out&lt;-na.omit(lefse.out))
+
+if (make.lefse.plots) {
+  system(&quot;plot_res.py lefse.res lefse_lda.png&quot;)
+  print(&quot;Wrote lefse_lda.png&quot;)
+  system(&quot;plot_cladogram.py lefse.res lefse_clado.pdf --format pdf&quot;)
+  print(&quot;Wrote lefse_clado.pdf&quot;)
+}
+# 
+pdf(paste(results_folder,'lda_plot_LEFSE.pdf',sep=&quot;&quot;),height = 4, width = 10)
+Palette_LTBI_cured &lt;- c(&quot;#e7298a&quot;,&quot;#377eb8&quot;)
+if(length(unique(lefse.out$direction))&lt;3){
+  lefse.out$lda[lefse.out$direction==unique(lefse.out$direction)[1]] &lt;- 
+    -1*lefse.out$lda[lefse.out$direction==unique(lefse.out$direction)[1]]
+}
+lefse.out$taxon&lt;-factor(lefse.out$taxon,levels=lefse.out$taxon[order(lefse.out$lda)])
+g1&lt;-ggplot(data=lefse.out,aes(x=taxon,y=lda,color=direction,fill=direction))+
+  geom_bar(stat=&quot;identity&quot;)+
+  coord_flip()+
+  theme_base()+
+  xlab(&quot;LDA Score&quot;)+
+  ylab(&quot;&quot;)
+if(length(unique(lefse.out$direction))&lt;3){
+  g1&lt;-g1+scale_color_manual(values=c(Palette_LTBI_cured))+
+    scale_fill_manual(values=c(Palette_LTBI_cured))
+}
+print(g1)
+dev.off()
+</code></pre>
+
+<pre><code class="r">ltk&lt;-as.character(lefse.out$taxon)
+phy_ra_ltk&lt;-prune_taxa(ltk,phy.lefse)
+phy_ra_ltk_m&lt;-psmelt(phy_ra_ltk)
+
+phy_ra_ltk_m$OTU&lt;-factor(phy_ra_ltk_m$OTU, levels=lefse.out$taxon[order(lefse.out$lda)])
+
+Palette_LTBI_cured &lt;- c(&quot;#377eb8&quot;,&quot;#e7298a&quot;)
+g2&lt;-ggplot(phy_ra_ltk_m,aes(x=OTU,
+                            y=Abundance,color=TB_status,
+                            fill=TB_status))+
+  geom_boxplot(position=position_dodge(),
+               colour=&quot;black&quot;, # Use black outlines,
+               size=.3,alpha=0.5) +      # Thinner lines
+  theme_base()+
+  xlab(&quot;&quot;)+
+  coord_flip()
+
+if(length(unique(lefse.out$direction))&lt;3){
+  g2&lt;-g2+scale_color_manual(values=c(Palette_LTBI_cured))+
+    scale_fill_manual(values=c(Palette_LTBI_cured))
+}
+pdf(paste(results_folder,'significant_LEFSE.pdf',sep=&quot;&quot;),height = 6, width = 10)
+print(g2)
+dev.off()
+</code></pre>
+
+<p>mtph_phy_ra_ltk&lt;-phy_ra_ltk</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '..';</script>
+        <script src="../js/base.js"></script>
+        <script src="../search/require.js"></script>
+        <script src="../search/search.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </body>
+</html>
