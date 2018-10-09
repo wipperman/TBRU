@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Plots - TBRU</title>
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="..">TBRU</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="..">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">16S data <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../GettingStarted/">Getting Started</a>
+</li>
+                                    
+<li >
+    <a href="../Treatment/">Treatment</a>
+</li>
+                                    
+<li >
+    <a href="../Cured/">Cured</a>
+</li>
+                                    
+<li >
+    <a href="../IGRA/">IGRA status</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Metagenomics <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../Treatment_metagenomics/">Treatment</a>
+</li>
+                                    
+<li >
+    <a href="../Cured_metagenomics/">Cured</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">MAIT and γδ T cells <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li class="active">
+    <a href="./">Plots</a>
+</li>
+                                </ul>
+                            </li>
+                            <li >
+                                <a href="../about/">About</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li >
+                                <a rel="next" href="../Cured_metagenomics/">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../about/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#preparing-the-data">Preparing the data</a></li>
+            <li><a href="#give-priority-to-specific-functions-for-annoying-namespace-reasons">Give priority to specific functions for annoying namespace reasons</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="preparing-the-data">Preparing the data</h1>
+<pre><code class="r">setwd(&quot;~/Desktop/Charles_MAIT/&quot;) #pick a directory
+rm(list=ls())
+library(plyr);library(ggtree);library(phyloseq);library(ggplot2);library(scales);library(grid)
+library(Hmisc);library(gridExtra);library(scales);library(stringr);library(logistf)
+library(coxphf);library(reshape2);library(ifultools);library(car);library(vegan)
+library(gdata);library(chron);library(data.table);library(tidyr) #imports tibble
+library(ggplot2);library(yingtools2);library(gridExtra);library(lubridate);library(dplyr)
+library(&quot;pheatmap&quot;);library(&quot;RColorBrewer&quot;);library(&quot;genefilter&quot;);library(ggthemes)
+library(&quot;reshape2&quot;);library(&quot;gridExtra&quot;);library(&quot;colorspace&quot;);library(&quot;lattice&quot;)
+library(&quot;pracma&quot;);library(&quot;ComplexHeatmap&quot;);library(&quot;BiocParallel&quot;);library(&quot;viridis&quot;);library(&quot;circlize&quot;)
+select &lt;- dplyr::select
+summarize &lt;- dplyr::summarize
+rownames_to_column &lt;- tibble::rownames_to_column
+
+phy_contacts &lt;- readRDS(&quot;phy.JCI.RDS&quot;)
+</code></pre>
+
+<h3 id="give-priority-to-specific-functions-for-annoying-namespace-reasons">Give priority to specific functions for annoying namespace reasons</h3>
+<pre><code class="r"># Calculate bray curtis distance matrix
+bray &lt;- phyloseq::distance(phy_contacts, method = &quot;bray&quot;)
+
+# make a data frame from the sample_data
+sampledf &lt;- data.frame(sample_data(phy_contacts))
+
+# Adonis test
+library(vegan)
+set.seed(12345678)
+adonis2(bray ~ IGRA + sex + Group6_TB_category, data = sampledf)
+
+
+beta &lt;- betadisper(bray, sampledf$Group6_TB_category)
+permutest(beta)
+</code></pre>
+
+<pre><code class="r">#docker run -v ~/Desktop/Charles_MAIT/:/home/linuxbrew/inputs -it biobakery/lefse bash
+
+system(&quot;echo $PATH&quot;)
+results_folder &lt;- &quot;~/Desktop/Charles_MAIT/&quot; 
+
+#make names lefse-friendly for python scripts
+taxa_names(phy_contacts)&lt;-gsub('\\(','',taxa_names(phy_contacts))
+taxa_names(phy_contacts)&lt;-gsub(')','',taxa_names(phy_contacts))
+taxa_names(phy_contacts)&lt;-gsub(' ','_',taxa_names(phy_contacts))
+taxa_names(phy_contacts)
+phy.lefse&lt;-phy_contacts
+
+class &lt;- &quot;Group6_TB_category&quot;
+subclass&lt;-NA
+subject&lt;-&quot;sample&quot;
+anova.alpha&lt;-0.01
+wilcoxon.alpha&lt;-0.01
+lda.cutoff&lt;-2.5
+
+wilcoxon.within.subclass &lt;- TRUE
+one.against.one &lt;- FALSE 
+mult.test.correction &lt;- 0 
+make.lefse.plots &lt;- FALSE
+by_otus &lt;- FALSE
+# 
+sample.data &lt;- phyloseq::sample_data(phy.lefse) %&gt;% data.frame(stringsAsFactors = FALSE)
+sample.data &lt;- rownames_to_column(sample.data,var=&quot;sample&quot;) 
+# 
+keepvars &lt;- c(&quot;sample&quot;,&quot;Group6_TB_category&quot;)
+keepvars &lt;- unique(keepvars[!is.na(keepvars)])
+
+lefse.samp &lt;- sample.data[, keepvars]
+# 
+sample0 &lt;- t(lefse.samp) %&gt;% as.matrix()
+colnames(sample0) &lt;- sample0[1,]
+sample0 &lt;- as.data.frame(sample0) %&gt;% t() %&gt;% as.data.frame()
+
+data0 &lt;- otu_table(phy.lefse) %&gt;% as.data.frame()
+data1 &lt;- data0 %&gt;% as.data.table(keep.rownames=T) %&gt;% t()
+data2 &lt;- rownames_to_column(as.data.frame(data1),var=&quot;sample&quot;)
+
+pre.lefse &lt;- right_join(sample0,data2,by=&quot;sample&quot;) %&gt;% t()
+rownames(pre.lefse) &lt;- NULL
+pre.lefse[1,1] &lt;- &quot;sample&quot;
+pre.lefse[2,1] &lt;- &quot;IGRA&quot;
+pre.lefse &lt;- pre.lefse %&gt;% t() %&gt;% na.omit() %&gt;% t()
+# 
+
+write.table(pre.lefse,file =paste(results_folder,&quot;lefse.txt&quot;,sep=&quot;&quot;),sep = &quot;\t&quot;,row.names = FALSE,col.names = FALSE,quote = FALSE)
+# 
+opt.class &lt;- paste(&quot;-c&quot;, which(keepvars %in% class))
+opt.subclass &lt;- ifelse(is.na(subclass), &quot;&quot;, paste(&quot;-s&quot;, which(keepvars %in% 
+                                                                subclass)))
+opt.subject &lt;- ifelse(is.na(subject), &quot;&quot;, paste(&quot;-u&quot;, which(keepvars %in% 
+                                                              subject)))
+format.command &lt;- paste(paste(&quot;format_input.py &quot;,results_folder,&quot;lefse.txt &quot;,results_folder,&quot;lefse.in&quot;,sep=&quot;&quot;), 
+                        opt.class, opt.subclass, opt.subject, &quot;-o 1000000&quot;)
+system(format.command)
+#
+#docker run -v ~/Desktop/Charles_MAIT/:/home/linuxbrew/inputs -it biobakery/lefse bash
+lefse.command &lt;- paste(paste(&quot;run_lefse.py &quot;,&quot;lefse.in &quot; , &quot;lefse.res&quot;,sep=&quot;&quot;), 
+                       &quot;-a&quot;, anova.alpha, &quot;-w&quot;, wilcoxon.alpha, &quot;-l&quot;, lda.cutoff, 
+                       &quot;-e&quot;, as.numeric(wilcoxon.within.subclass), &quot;-y&quot;, as.numeric(one.against.one), 
+                       &quot;-s&quot;, mult.test.correction)
+lefse.command
+system(lefse.command)
+
+lefse.out &lt;- read.table(paste(&quot;lefse.res&quot;,sep=&quot;&quot;), header = FALSE, sep = &quot;\t&quot;)
+names(lefse.out)&lt;-c(&quot;taxon&quot;,&quot;log.max.pct&quot;,&quot;direction&quot;,&quot;lda&quot;,&quot;p.value&quot;)
+(lefse.out&lt;-na.omit(lefse.out))
+Palette_LTBI_treatment &lt;- c(&quot;#377eb8&quot;,&quot;#984ea3&quot;) #modify this
+
+ltk&lt;-as.character(lefse.out$taxon)
+# ltk.list&lt;-list()
+# for (i in seq(1,length(ltk))){
+#   tmp&lt;-strsplit(ltk[i],&quot;_&quot;)
+#   ltk.list[[i]]&lt;-tmp[[1]][2]
+# }
+# (ltk&lt;-as.character(do.call('rbind',ltk.list)))
+phy_ra_ltk&lt;-prune_taxa(ltk,phy_contacts)
+phy_ra_ltk_m&lt;-psmelt(phy_ra_ltk)
+
+Palette_FC_CC &lt;- c(&quot;#00C000&quot;,&quot;#7F007F&quot;)
+g2&lt;-ggplot(phy_ra_ltk_m,aes(x=OTU,
+  y=Abundance,color=Group6_TB_category,
+  fill=Group6_TB_category))+
+  geom_boxplot(position=position_dodge(),
+   colour=&quot;black&quot;, # Use black outlines,
+    size=.3,alpha=0.5) +      # Thinner lines
+  theme_base()+
+  xlab(&quot;&quot;)+
+  coord_flip()+ facet_wrap(~Group6_TB_category) + 
+  scale_y_continuous(limits = c(0,15))
+if(length(unique(lefse.out$direction))&lt;3){
+  g2&lt;-g2+scale_color_manual(values=c(Palette_FC_CC))+
+    scale_fill_manual(values=c(Palette_FC_CC))
+}
+print(g2)
+
+# pdf('Correlated_FC-CC_0.01_LDA2.5_all.pdf', height = 8, width = 12)
+# print(g2)
+# dev.off()
+</code></pre>
+
+<pre><code class="r">common &lt;-intersect(lefse.out$taxon,cor_ht_dt_w$taxon)
+
+#big for loop
+mainDir &lt;- &quot;~/Desktop/Charles_MAIT/&quot;
+subDir &lt;- &quot;DESeq_FC-CC_immune&quot;
+dir.create(file.path(mainDir, subDir), showWarnings = TRUE,recursive = TRUE)
+results_folder &lt;- paste(mainDir,subDir,sep=&quot;&quot;)
+
+cor_ht_dt &lt;- NULL
+heat_dt &lt;- data.frame(taxon = NULL, rho = NULL, effectors = NULL)
+
+sample_variables(phy)
+
+vars_to_keep &lt;- c(&quot;il17m_5aru&quot;,&quot;il17m_dyna&quot;,&quot;cd4mil17_rest&quot;,&quot;cd8mil17_rest&quot;,
+                  &quot;dnmil17_rest&quot;,&quot;cd4mil17_5aru&quot;,&quot;cd8mil17_5aru&quot;,&quot;dnmil17_5aru&quot; ,&quot;cd4mil17_dyna&quot;,
+                  &quot;cd8mil17_dyna&quot;,&quot;dnmil17_dyna&quot;,&quot;cd4til17_rest&quot;,&quot;cd8til17_rest&quot;,
+                  &quot;dntil17_rest&quot;,&quot;cd4til17_dyna&quot;,&quot;cd8til17_dyna&quot;,&quot;dntil17_dyna&quot;)
+
+effectors_all&lt;- c(vars_to_keep) 
+
+for (effectors in effectors_all){
+  # Subset the samples 
+  phy_var &lt;- subset_samples(phy_contacts,!is.na(get_variable(phy_contacts, effectors)) | get_variable(phy_contacts, effectors)!=&quot;&quot;)
+  phy_var &lt;-  subset_samples(phy_var, get_variable(phy_var, effectors) != &quot;na&quot;)
+  phy_var &lt;-  subset_samples(phy_var, get_variable(phy_var, effectors) != &quot;&quot;)
+
+  sdat&lt;-otu_table(phy_var) %&gt;% as.data.frame()
+  xcor&lt;-get_variable(phy_var, effectors)
+  c_th&lt;-0.05
+  c_pvalue&lt;-list()
+  c_estimate&lt;-list()
+  for (ic in seq(1,nrow(sdat))){
+    ycor&lt;-sdat[ic,]
+    cor.result&lt;-cor.test(as.numeric(xcor),as.numeric(ycor),method = &quot;spearman&quot;) #nonparametric = spearman
+    c_pvalue[[ic]] &lt;- cor.result$p.value
+    c_estimate[[ic]] &lt;- cor.result$estimate
+  }
+  c_pvalue&lt;-do.call('rbind',c_pvalue)
+  c_estimate&lt;-do.call('rbind',c_estimate)
+
+  isig&lt;-which(c_pvalue &lt;= c_th)
+  taxa_sig&lt;-taxa_names(phy_var)[isig]
+  c_pvalue_sig&lt;-c_pvalue[isig]
+  c_estimate_sig&lt;-c_estimate[isig]
+  correlation_results&lt;-data.frame(taxa_sig,c_pvalue_sig,c_estimate_sig)
+  names(correlation_results)&lt;-c(&quot;taxon&quot;,&quot;pvalue&quot;,&quot;spearman_rho&quot;)
+
+  if(nrow(correlation_results) &gt; 0){
+
+    correlation_results$rho&lt;-as.numeric(correlation_results$spearman_rho)
+    correlation_results$taxon&lt;-factor(correlation_results$taxon,
+                                      levels=correlation_results$taxon[order(correlation_results$spearman_rho)])
+    correlation_results$i_eff &lt;- effectors  
+
+    # Cut off for rho    0.4 &lt;= spearman_rho &amp; spearman_rho  &lt;=  -0.4
+    correlation_results &lt;- correlation_results[which(abs(correlation_results$spearman_rho) &gt;= 0.2) ,]
+
+    if(nrow(correlation_results) &gt; 0){
+
+      cor_ht_dt &lt;- rbind(cor_ht_dt, correlation_results)  
+
+      # barplot
+      pdf(paste(results_folder,paste0(&quot;bar_plot_spearman_coeff&quot;,effectors,&quot;.pdf&quot;),sep=&quot;/&quot;),height = 6, width = 10)
+      g1&lt;-ggplot(data=correlation_results,aes(x=taxon, y=rho))+
+        geom_bar(stat=&quot;identity&quot;)+ 
+        coord_flip()+
+        theme_base()+
+        xlab(&quot;Species&quot;)+
+        ylab(&quot;Spearman - rho&quot;)
+      print(g1)
+      dev.off()
+
+      # code below is for heatmap
+
+      phy_sig_var &lt;-  prune_taxa(as.character(correlation_results$taxon), phy_var)
+      sig_data_c&lt;-data.frame(otu_table(phy_sig_var))
+      y_eff &lt;- as.numeric(as.character(get_variable(phy_sig_var, effectors)))
+
+
+
+      pnca_colors&lt;-colorRamp2(c(min(log(y_eff+1)),
+                                max(log(y_eff+1))), c(&quot;white&quot;, &quot;blue&quot;))
+
+      dist_to_use&lt;-function(x) (1-dist(t(x)))
+      mat&lt;-as.matrix(as.data.frame(sig_data_c))     
+      mat2&lt;-scale(t(mat), scale = T, center = T)
+      mat2&lt;-t(mat2)
+      annotations&lt;-data.frame(y_eff,as.character(get_variable(phy_var, &quot;Group6_TB_category&quot;)))
+      names(annotations)&lt;-c(&quot;effectors&quot;,&quot;group&quot;)#,&quot;conventional_cd8mtreg&quot;)#,&quot;IGRA&quot;)#,&quot;group&quot;)#&quot;cd8mtreg&quot;) #&quot;TB_status&quot;,&quot;IGRA&quot;,
+
+      tmp_c &lt;- sample_data(phy_var) %&gt;% as.data.frame()
+      #tmp_c[order(tmp_c)$effectors,] #[order(sample_data(phy_var)$effectors),]
+
+      max_value &lt;- max(as.numeric(as.character(get_variable(phy_var, effectors))))
+      #color_col = list(effectors = colorRamp2(c(0,max_value),c(&quot;white&quot;,&quot;#DC143C&quot;)), 
+                                          #group = c(&quot;family_contact&quot; = &quot;#7F007F&quot;,&quot;community_control&quot; = &quot;#00C000&quot;))
+
+      #color_col = list(effectors = colorRamp2(c(0,noquote(max(tmp_c$effectors))),c(&quot;white&quot;,&quot;#DC143C&quot;)), group = c(&quot;family_contact&quot; =   &quot;#7F007F&quot;,&quot;community_control&quot; = &quot;#00C000&quot;))
+      #ha_column = HeatmapAnnotation(annotations, col = color_col)
+      ha_column = HeatmapAnnotation(annotations)
+
+      ht1 = Heatmap(mat2, name = &quot;Relative Abundance&quot;, column_title = NA, top_annotation = ha_column,
+                    clustering_distance_rows = &quot;euclidean&quot;,
+                    clustering_method_rows = &quot;complete&quot;,row_names_side = &quot;left&quot;, km=1, color_space = &quot;LAB&quot;,
+                    col=viridis(11), row_dend_side=&quot;right&quot;,
+                    clustering_method_columns = &quot;ward.D&quot;,
+                    width=4, row_names_max_width = unit(8, &quot;cm&quot;),show_column_names= F,
+                    row_names_gp = gpar(fontsize = 9), cluster_columns = T,na_col=&quot;white&quot;)
+      ht_list = ht1
+      padding = unit.c(unit(2, &quot;mm&quot;), grobWidth(textGrob(&quot;jnbksdffsdfsfd_annotation_name&quot;)) - unit(1, &quot;cm&quot;),
+                       unit(c(2, 2), &quot;mm&quot;))
+
+
+      pdf(paste(results_folder,paste0(&quot;heatmap_spearman_0.01_&quot;,effectors,&quot;.pdf&quot;),sep=&quot;/&quot;),height = 2.5, width = 11)
+      draw(ht_list, padding = padding)
+      dev.off()
+
+    }
+  }
+}
+
+# Reshape the dataframe for heatmap
+cor_ht_dt &lt;-  cor_ht_dt[,c(&quot;taxon&quot;,&quot;rho&quot;,&quot;i_eff&quot;)]
+
+# Convert long to wide format for phyloseq object
+cor_ht_dt_w &lt;- dcast(cor_ht_dt, taxon ~ i_eff, value.var=&quot;rho&quot;,fun.aggregate = mean)
+cor_ht_dt_w[is.na(cor_ht_dt_w)] &lt;- 0
+
+######match tree with heatmap rownames
+phy_sig&lt;-prune_taxa(as.character(cor_ht_dt_w$taxon),phy_contacts)
+
+row_den &lt;-  ape:::as.phylo(phy_tree(phy_sig))
+# row_den &lt;- as.dendrogram(hclust(dist(cor_data)))
+# plot(row_den)
+
+#r_order &lt;-  rev(row_den$tip.label)
+cor_data  &lt;- cor_ht_dt_w
+rownames(cor_data) &lt;- cor_data$taxon
+cor_data$taxon &lt;- NULL
+
+clust.col &lt;- hclust(dist(t(cor_data)))
+plot(clust.col)
+col_den &lt;- as.dendrogram(clust.col)
+sig_data_c &lt;- cor_data
+mat&lt;-as.matrix(sig_data_c)
+mat2&lt;-scale(t(mat), scale = F, center = F)
+mat2&lt;-t(mat2)
+#rownames(mat2) &lt;-  cor_ht_dt_w$taxon
+
+# #get data from ggTree
+# d &lt;- fortify(tr)
+# dd &lt;- subset(d, isTip)
+# r_order &lt;- dd$label[order(dd$y, decreasing=T)]
+# 
+# mat3 &lt;- mat2[match(r_order,rownames(mat2)),]
+
+# Without phylogenetic tree clustering
+
+sig_data_c &lt;- cor_ht_dt_w[,2:ncol(cor_ht_dt_w)]
+dist_to_use&lt;-function(x) (1-dist(t(x)))
+mat&lt;-as.matrix(as.data.frame(sig_data_c))     
+mat2&lt;-scale(t(mat), scale = F, center = F)
+mat2&lt;-t(mat2)
+rownames(mat2) &lt;- cor_ht_dt_w$taxon
+rownames(mat2) &lt;- gsub(&quot;\\s*\\w*$&quot;, &quot;&quot;, rownames(mat2))
+jet.colors &lt;- colorRampPalette(c(&quot;#00007F&quot;, &quot;blue&quot;, &quot;#007FFF&quot;, &quot;cyan&quot;, &quot;#7FFF7F&quot;, &quot;yellow&quot;, &quot;#FF7F00&quot;, &quot;red&quot;, &quot;#7F0000&quot;))
+jet.colors &lt;- colorRampPalette(c(&quot;red&quot;,&quot;grey&quot;, &quot;darkblue&quot;))
+
+subsets &lt;- levels(as.factor(cor_ht_dt$i_eff))
+#annotation &lt;- data.frame(subsets,c(&quot;CD4&quot;,&quot;CD4&quot;,&quot;CD8&quot;,&quot;CD8&quot;,&quot;DN&quot;,&quot;DN&quot;,&quot;CD4&quot;),row.names = T)
+#names(annotation) &lt;- c(&quot;subset&quot;)
+#ha_column = HeatmapAnnotation(annotation)
+
+pdf(paste(results_folder,&quot;/heatmap_spearman_all_effectors_no_tree&quot;,'.pdf',sep=&quot;&quot;),height = 20, width = 10)
+ht1 = Heatmap(mat2, name = &quot;relativeAbundance&quot;, column_title = NA, #top_annotation = ha_column,
+              #clustering_distance_rows = &quot;euclidean&quot;,clustering_method_rows = &quot;complete&quot;,
+              row_names_side = &quot;left&quot;, km=1, color_space = &quot;LAB&quot;,
+              col=jet.colors(11), row_dend_side=&quot;right&quot;,
+              clustering_method_columns = &quot;ward.D&quot;,cluster_rows = F,
+              width=4, row_names_max_width = unit(8, &quot;cm&quot;),show_column_names= T,
+              row_names_gp = gpar(fontsize = 9), cluster_columns = T,na_col=&quot;white&quot;)
+ht_list = ht1
+draw(ht_list) 
+dev.off()
+
+# pdf(&quot;Tree.physig.pdf&quot;,height = 9.5,width = 20)
+# plot_tree(phy_sig, size=&quot;abundance&quot;, color=&quot;Phylum&quot;,label.tips = &quot;taxa_names&quot;,
+#           justify = &quot;yes please&quot;)
+# dev.off()
+</code></pre>
+
+<p>common &lt;-intersect(lefse.out$taxon,cor_ht_dt_w$taxon)</p>
+<p>phy_common &lt;- prune_taxa(taxa = common,phy_contacts)</p>
+<pre><code class="r">#Phylogenetic Tree
+phy_sig&lt;-prune_taxa(as.character(cor_ht_dt_w$taxon),phy_contacts)
+p.species &lt;- phy_common
+library(yingtools2)
+library(ggtree)
+tr &lt;- phy_tree(p.species)
+spec &lt;- as.data.frame(get.tax(p.species))
+gt &lt;- ggtree(tr, branch.length = &quot;y&quot;,ladderize = T) %&lt;+% spec
+gd &lt;- gt$data
+
+
+data_eff &lt;-  cor_ht_dt_w
+rownames(data_eff) &lt;-  cor_ht_dt_w$taxon
+data_eff$taxon &lt;-  NULL
+data_eff &lt;- as.matrix(data_eff)
+#data_eff %&gt;% View
+g1 &lt;- gt + geom_tippoint(aes(color=Order),size=3) + geom_tiplab(size =3)
+
+# data_eff_cd4 &lt;- data_eff[,1:8]
+# data_eff_cd8 &lt;- data_eff[,9:15]
+
+g &lt;- gheatmap(g1,data_eff,offset=2.5, width=2,colnames_angle=-45,hjust=0,font.size = 5) +
+  scale_fill_gradient2(low = &quot;darkred&quot;, mid = &quot;grey&quot;,high = &quot;darkblue&quot;) 
+
+print(g)
+
+
+pdf(paste(results_folder,&quot;gg.tree.FC_CC_0.01_DESeq&quot;,'.pdf',sep=&quot;&quot;),height = 1, width = 10)
+print(g)
+dev.off()
+</code></pre>
+
+<pre><code class="r">#tsne plots
+library(phyloseq)
+library(tsnemicrobiota)
+library(ggplot2)
+
+tsne_res &lt;- tsne_phyloseq(phy_contacts, distance='jsd',
+                          perplexity = 8, verbose=0, rng_seed = 3901,dimensions=3)
+# Plot the results.
+#sample_data(phy_contacts)$cd4m_5aru &lt;- as.numeric(as.character(sample_data(phy_contacts)$cd4m_5aru))
+
+plot_tsne_phyloseq(phy_contacts, tsne_res,
+  color = 'Group6_TB_category',shape=&quot;IGRA&quot;, title='t-SNE (jsd)') +
+  geom_point(size=3) + scale_color_manual(values=c(Palette_FC_CC))+
+  scale_fill_manual(values=c(Palette_FC_CC))
+</code></pre></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"search": 83, "next": 78, "help": 191, "previous": 80};
+        </script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

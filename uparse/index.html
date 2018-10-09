@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Uparse - TBRU</title>
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="..">TBRU</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="..">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">16S data <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../GettingStarted/">Getting Started</a>
+</li>
+                                    
+<li >
+    <a href="../Treatment/">Treatment</a>
+</li>
+                                    
+<li >
+    <a href="../Cured/">Cured</a>
+</li>
+                                    
+<li >
+    <a href="../IGRA/">IGRA status</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Metagenomics <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../Treatment_metagenomics/">Treatment</a>
+</li>
+                                    
+<li >
+    <a href="../Cured_metagenomics/">Cured</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">MAIT and γδ T cells <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../MAIT_GD_Tcells/">Plots</a>
+</li>
+                                </ul>
+                            </li>
+                            <li >
+                                <a href="../about/">About</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#binbash">!/bin/bash</a></li>
+        <li class="main "><a href="#usearch-derep_fulllength-totalfasta-fastaout-total2derepfasta-sizeout-uc-total2aderepuc-threads-8">usearch -derep_fulllength total.fasta -fastaout total.2.derep.fasta -sizeout -uc total.2a.derep.uc -threads 8</a></li>
+        <li class="main "><a href="#dereplicate-seqs-headers-become-pool426677crlp28bmt_21size38122"># dereplicate seqs (headers become: &gt;pool426.677C.RLP(28).bmt_21;size=38122)</a></li>
+        <li class="main "><a href="#use-vsearch-instead-of-usearch-32-bit-for-large-files"># use vsearch instead of usearch (32-bit) for large files.</a></li>
+        <li class="main "><a href="#sort-by-size-by-looking-at-sizexxxx-and-remove-singletons"># sort by size (by looking at size=xxxx) and remove singletons</a></li>
+        <li class="main "><a href="#usearch-cluster_otus-total3sizesortedfasta-otus-total4repset-rawfasta-uparseout-total4aotu-summarytxt-relabel-otu_-sizein-sizeout">#usearch -cluster_otus total.3.sizesorted.fasta -otus total.4.repset-raw.fasta -uparseout total.4a.otu-summary.txt -relabel OTU_ -sizein -sizeout</a></li>
+        <li class="main "><a href="#automatically-removes-de-novo-chimeras-here-usearch7-and-above"># automatically removes de novo chimeras here (usearch7 and above)</a></li>
+        <li class="main "><a href="#provides-sequence-rep-set-and-otu-classification-summary"># provides sequence rep set and otu classification summary</a></li>
+        <li class="main "><a href="#needs-to-have-sizexxxx-from-derep-step"># needs to have ';size=xxxx;' from derep step</a></li>
+        <li class="main "><a href="#fasta_numberpy-total5repset-nochimerasfasta-otu_-total6repsetfasta">#fasta_number.py total.5.repset-nochimeras.fasta OTU_ &gt; total.6.repset.fasta</a></li>
+        <li class="main "><a href="#label-otus-using-uparse-python-script-new-headers-otu_"># label OTUs using UPARSE python script: new headers: OTU_</a></li>
+        <li class="main "><a href="#usearch-usearch_global-totalfasta-db-total5repsetfasta-strand-plus-id-097-uc-total5aotuuc-threads-8">usearch -usearch_global total.fasta -db total.5.repset.fasta -strand plus -id 0.97 -uc total.5a.otu.uc -threads 8</a></li>
+        <li class="main "><a href="#map-the-original-quality-filtered-reads-back-to-otus">#map the original quality filtered reads back to OTUs</a></li>
+        <li class="main "><a href="#creates-a-table-showing-otu-membership-otumapuc">#creates a table showing otu membership (otu.map.uc)</a></li>
+        <li class="main "><a href="#non-matches-are-reported-as-n-at-beginning-of-line-instead-of-h">#non-matches are reported as 'N' at beginning of line (instead of H)</a></li>
+        <li class="main "><a href="#some-reads-may-not-match-any-otu-for-these-reasons">#Some reads may not match any OTU for these reasons:</a></li>
+        <li class="main "><a href="#1-the-read-is-chimeric">#(1) the read is chimeric,</a></li>
+        <li class="main "><a href="#2-the-read-has-more-than-3-errors">#(2) the read has more than 3% errors,</a></li>
+        <li class="main "><a href="#3-the-read-has-a-singleton-sequence-so-was-discarded">#(3) the read has a singleton sequence so was discarded.</a></li>
+        <li class="main "><a href="#make-otu-table-i-modified-the-function-getsampleid-in-the-script-uc2otutabpy-and-renamed-the-script-uc2otutab_modpy"># make OTU table. I modified the function 'GetSampleID' in the script 'uc2otutab.py' and renamed the script 'uc2otutab_mod.py':</a></li>
+        <li class="main "><a href="#the-modified-function-is-function-is"># The modified function is: function is:</a></li>
+        <li class="main "><a href="#def-getsampleidlabel"># def GetSampleId(Label):</a></li>
+        <li class="main "><a href="#sampleid-labelsplit0split_0">#    SampleID = Label.split()[0].split('_')[0]</a></li>
+        <li class="main "><a href="#return-sampleid">#    return SampleID</a></li>
+        <li class="main "><a href="#convert-to-biom-format"># convert to biom format</a></li>
+        <li class="main "><a href="#classification-refgg99"># classification, ref=gg99</a></li>
+        <li class="main "><a href="#mothur-classifyseqsfastatotal5repsetfasta-taxonomyusersmatthewwippermandatabasesgg_13_8_99taxonomygg_13_8_99ggtax-templateusersmatthewwippermandatabasesgg_13_8_99taxonomygg_13_8_99fasta-iters1000-processors8">mothur "#classify.seqs(fasta=total.5.repset.fasta, taxonomy=/Users/matthewwipperman/Databases/Gg_13_8_99.taxonomy/gg_13_8_99.gg.tax, template=/Users/matthewwipperman/Databases/Gg_13_8_99.taxonomy/gg_13_8_99.fasta, iters=1000, processors=8)"</a></li>
+        <li class="main "><a href="#assign-taxonomy"># assign taxonomy</a></li>
+        <li class="main "><a href="#add-taxonomy-metadata-to-biom">#add taxonomy metadata to biom</a></li>
+        <li class="main "><a href="#align_seqspy-i-total5repsetfasta-o-aligned-m-muscle">##align_seqs.py -i total.5.repset.fasta -o aligned -m muscle</a></li>
+        <li class="main "><a href="#create-phylogenetic-tree"># create phylogenetic tree</a></li>
+        <li class="main "><a href="#alpha_diversitypy-i-total8otu-taxbiom-o-alpha_diversitytxt-t-total10tree-m-simpson_reciprocalgoods_coverageobserved_speciesshannonsimpsonsimpson_epd_whole_treechao1">#alpha_diversity.py -i total.8.otu-tax.biom -o alpha_diversity.txt -t total.10.tree -m simpson_reciprocal,goods_coverage,observed_species,shannon,simpson,simpson_e,PD_whole_tree,chao1</a></li>
+        <li class="main "><a href="#beta_diversitypy-i-total8otu-taxbiom-o-beta_diversity-t-total10tree-m-euclideanbinary_euclideanbray_curtisbray_curtis_faithbray_curtis_magurranmanhattanpearsonspearman_approxunifracunifrac_gunifrac_g_full_treeunweighted_unifracunweighted_unifrac_full_treeweighted_normalized_unifracweighted_unifrac">#beta_diversity.py -i total.8.otu-tax.biom -o beta_diversity -t total.10.tree -m euclidean,binary_euclidean,bray_curtis,bray_curtis_faith,bray_curtis_magurran,manhattan,pearson,spearman_approx,unifrac,unifrac_g,unifrac_g_full_tree,unweighted_unifrac,unweighted_unifrac_full_tree,weighted_normalized_unifrac,weighted_unifrac</a></li>
+        <li class="main "><a href="#calculate-alpha-and-beta-diversity">#calculate alpha and beta diversity</a></li>
+        <li class="main "><a href="#send-text-when-done">send text when done</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="binbash">!/bin/bash</h1>
+<p>vsearch -fastx_filter total.fastq -fastaout total.1.filtered.fasta -fastq_maxee 1 -threads 8</p>
+<h1 id="usearch-derep_fulllength-totalfasta-fastaout-total2derepfasta-sizeout-uc-total2aderepuc-threads-8">usearch -derep_fulllength total.fasta -fastaout total.2.derep.fasta -sizeout -uc total.2a.derep.uc -threads 8</h1>
+<p>vsearch -derep_fulllength total.1.filtered.fasta -output total.2.derep.fasta</p>
+<h1 id="dereplicate-seqs-headers-become-pool426677crlp28bmt_21size38122"># dereplicate seqs (headers become: &gt;pool426.677C.RLP(28).bmt_21;size=38122)</h1>
+<h1 id="use-vsearch-instead-of-usearch-32-bit-for-large-files"># use vsearch instead of usearch (32-bit) for large files.</h1>
+<h1 id="_1"></h1>
+<p>usearch -sortbysize total.2.derep.fasta -minsize 2 -fastaout total.3.sizesorted.fasta</p>
+<h1 id="sort-by-size-by-looking-at-sizexxxx-and-remove-singletons"># sort by size (by looking at size=xxxx) and remove singletons</h1>
+<h1 id="_2"></h1>
+<h1 id="usearch-cluster_otus-total3sizesortedfasta-otus-total4repset-rawfasta-uparseout-total4aotu-summarytxt-relabel-otu_-sizein-sizeout">#usearch -cluster_otus total.3.sizesorted.fasta -otus total.4.repset-raw.fasta -uparseout total.4a.otu-summary.txt -relabel OTU_ -sizein -sizeout</h1>
+<p>usearch -cluster_otus total.3.sizesorted.fasta -otus total.4.repset-raw.fasta -uparseout total.4a.otu-summary.txt -relabel OTU_ -sizein -sizeout</p>
+<h1 id="automatically-removes-de-novo-chimeras-here-usearch7-and-above"># automatically removes de novo chimeras here (usearch7 and above)</h1>
+<h1 id="provides-sequence-rep-set-and-otu-classification-summary"># provides sequence rep set and otu classification summary</h1>
+<h1 id="needs-to-have-sizexxxx-from-derep-step"># needs to have ';size=xxxx;' from derep step</h1>
+<h1 id="_3"></h1>
+<p>usearch -uchime2_ref total.4.repset-raw.fasta -db ~/Databases/gold.fa -strand plus -nonchimeras total.5.repset.fasta -threads 8</p>
+<h1 id="fasta_numberpy-total5repset-nochimerasfasta-otu_-total6repsetfasta">#fasta_number.py total.5.repset-nochimeras.fasta OTU_ &gt; total.6.repset.fasta</h1>
+<h1 id="label-otus-using-uparse-python-script-new-headers-otu_"># label OTUs using UPARSE python script: new headers: OTU_</h1>
+<h1 id="_4"></h1>
+<h1 id="usearch-usearch_global-totalfasta-db-total5repsetfasta-strand-plus-id-097-uc-total5aotuuc-threads-8">usearch -usearch_global total.fasta -db total.5.repset.fasta -strand plus -id 0.97 -uc total.5a.otu.uc -threads 8</h1>
+<p>vsearch -usearch_global total.1.filtered.fasta -db total.5.repset.fasta -strand plus -id 0.97 -uc total.5a.otu.uc -threads 8</p>
+<h1 id="map-the-original-quality-filtered-reads-back-to-otus">#map the <em>original</em> quality filtered reads back to OTUs</h1>
+<h1 id="creates-a-table-showing-otu-membership-otumapuc">#creates a table showing otu membership (otu.map.uc)</h1>
+<h1 id="non-matches-are-reported-as-n-at-beginning-of-line-instead-of-h">#non-matches are reported as 'N' at beginning of line (instead of H)</h1>
+<h1 id="some-reads-may-not-match-any-otu-for-these-reasons">#Some reads may not match any OTU for these reasons:</h1>
+<h1 id="1-the-read-is-chimeric">#(1) the read is chimeric,</h1>
+<h1 id="2-the-read-has-more-than-3-errors">#(2) the read has more than 3% errors,</h1>
+<h1 id="3-the-read-has-a-singleton-sequence-so-was-discarded">#(3) the read has a singleton sequence so was discarded.</h1>
+<h1 id="_5"></h1>
+<p>python ~/scripts/uc2otutab_mod.py total.5a.otu.uc &gt; total.6.otu-table.txt</p>
+<h1 id="make-otu-table-i-modified-the-function-getsampleid-in-the-script-uc2otutabpy-and-renamed-the-script-uc2otutab_modpy"># make OTU table. I modified the function 'GetSampleID' in the script 'uc2otutab.py' and renamed the script 'uc2otutab_mod.py':</h1>
+<h1 id="the-modified-function-is-function-is"># The modified function is: function is:</h1>
+<h1 id="def-getsampleidlabel"># def GetSampleId(Label):</h1>
+<h1 id="sampleid-labelsplit0split_0">#    SampleID = Label.split()[0].split('_')[0]</h1>
+<h1 id="return-sampleid">#    return SampleID</h1>
+<h1 id="_6"></h1>
+<p>biom convert --table-type="OTU table" -i total.6.otu-table.txt -o total.7.otu-table.biom --to-json</p>
+<h1 id="convert-to-biom-format"># convert to biom format</h1>
+<h1 id="_7"></h1>
+<h1 id="classification-refgg99"># classification, ref=gg99</h1>
+<h1 id="mothur-classifyseqsfastatotal5repsetfasta-taxonomyusersmatthewwippermandatabasesgg_13_8_99taxonomygg_13_8_99ggtax-templateusersmatthewwippermandatabasesgg_13_8_99taxonomygg_13_8_99fasta-iters1000-processors8">mothur "#classify.seqs(fasta=total.5.repset.fasta, taxonomy=/Users/matthewwipperman/Databases/Gg_13_8_99.taxonomy/gg_13_8_99.gg.tax, template=/Users/matthewwipperman/Databases/Gg_13_8_99.taxonomy/gg_13_8_99.fasta, iters=1000, processors=8)"</h1>
+<p>assign_taxonomy.py -i total.5.repset.fasta -o tax --id_to_taxonomy_fp /Users/matthewwipperman/Databases/Gg_13_8_99.taxonomy/gg_13_8_99.gg.tax --reference_seqs_fp /Users/matthewwipperman/Databases/Gg_13_8_99.taxonomy/gg_13_8_99.fasta --assignment_method mothur --confidence 0
+blastn.py total.5.repset.fasta -db refseq_rna</p>
+<h1 id="assign-taxonomy"># assign taxonomy</h1>
+<h1 id="_8"></h1>
+<p>biom add-metadata --sc-separated taxonomy --observation-header OTUID,taxonomy --observation-metadata-fp tax/total.5.repset_tax_assignments.txt -i total.7.otu-table.biom -o total.8.otu-tax.biom --output-as-json</p>
+<h1 id="add-taxonomy-metadata-to-biom">#add taxonomy metadata to biom</h1>
+<h1 id="_9"></h1>
+<p>align_seqs.py -i total.5.repset.fasta -o aligned --template_fp ~/Databases/core_set_aligned.fasta.imputed</p>
+<h1 id="align_seqspy-i-total5repsetfasta-o-aligned-m-muscle">##align_seqs.py -i total.5.repset.fasta -o aligned -m muscle</h1>
+<p>filter_alignment.py -i aligned/total.5.repset_aligned.fasta -o aligned
+make_phylogeny.py -i aligned/total.5.repset_aligned_pfiltered.fasta -o total.10.tree --tree_method fasttree --log_fp aligned/make_phylo.log</p>
+<h1 id="create-phylogenetic-tree"># create phylogenetic tree</h1>
+<h1 id="_10"></h1>
+<h1 id="alpha_diversitypy-i-total8otu-taxbiom-o-alpha_diversitytxt-t-total10tree-m-simpson_reciprocalgoods_coverageobserved_speciesshannonsimpsonsimpson_epd_whole_treechao1">#alpha_diversity.py -i total.8.otu-tax.biom -o alpha_diversity.txt -t total.10.tree -m simpson_reciprocal,goods_coverage,observed_species,shannon,simpson,simpson_e,PD_whole_tree,chao1</h1>
+<h1 id="beta_diversitypy-i-total8otu-taxbiom-o-beta_diversity-t-total10tree-m-euclideanbinary_euclideanbray_curtisbray_curtis_faithbray_curtis_magurranmanhattanpearsonspearman_approxunifracunifrac_gunifrac_g_full_treeunweighted_unifracunweighted_unifrac_full_treeweighted_normalized_unifracweighted_unifrac">#beta_diversity.py -i total.8.otu-tax.biom -o beta_diversity -t total.10.tree -m euclidean,binary_euclidean,bray_curtis,bray_curtis_faith,bray_curtis_magurran,manhattan,pearson,spearman_approx,unifrac,unifrac_g,unifrac_g_full_tree,unweighted_unifrac,unweighted_unifrac_full_tree,weighted_normalized_unifrac,weighted_unifrac</h1>
+<h1 id="calculate-alpha-and-beta-diversity">#calculate alpha and beta diversity</h1>
+<h1 id="_11"></h1>
+<h1 id="send-text-when-done">send text when done</h1>
+<p>echo 'Now you can make pretty pictures in R :)' | mail -s 'TBRU run complete!' 'matthew.wipperman@gmail.com'</p>
+<h1 id="_12"></h1></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"search": 83, "next": 78, "help": 191, "previous": 80};
+        </script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
