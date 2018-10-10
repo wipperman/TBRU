@@ -155,36 +155,133 @@ sampledf &lt;- data.frame(sample_data(phy_contacts))
 library(vegan)
 set.seed(12345678)
 adonis2(bray ~ IGRA + sex + Group6_TB_category, data = sampledf)
-
-Permutation test for adonis under reduced model
-Terms added sequentially (first to last)
-Permutation: free
-Number of permutations: 999
-
-|    |Df |SumsOfSqs |MeanSqs |F.Model      |R2 |Pr(&gt;F)
-|---|---|---|---|---|---|---|
-|IGRA      |  1    | 0.03927 |0.01281 |0.6705 | 0.851 |
-|sex       |  2   |  0.17300 |0.05644 |1.4769 | 0.072 |.|
-|Group6_TB_category | 1 | 0.21748 |0.07095 |3.7132  |0.001 |***|
-|Residual     |      45 | 2.63568 0.85981|
-|Total       |       49 | 3.06544 | 1.00000|
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-beta &lt;- betadisper(bray, sampledf$Group6_TB_category)
-permutest(beta)
-
-Permutation test for homogeneity of multivariate dispersions
-Permutation: free
-Number of permutations: 999
-
-|   | Df | Sum Sq | Mean Sq | F | N.Perm | Pr(&gt;F) |
-|---|---|---|---|---|---|---|
-|Groups   |  1 | 0.00044 | 0.00044028 | 0.1967  |  999 | 0.663|
-|Residuals | 48 | 0.10747 | 0.00223889|
 </code></pre>
 
-<pre><code class="r">#docker run -v ~/Desktop/Charles_MAIT/:/home/linuxbrew/inputs -it biobakery/lefse bash
+<p>Permutation test for adonis under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Df</th>
+<th>SumsOfSqs</th>
+<th>MeanSqs</th>
+<th>F.Model</th>
+<th>R2</th>
+<th>Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IGRA</td>
+<td>1</td>
+<td>0.03927</td>
+<td>0.01281</td>
+<td>0.6705</td>
+<td>0.851</td>
+<td></td>
+</tr>
+<tr>
+<td>sex</td>
+<td>2</td>
+<td>0.17300</td>
+<td>0.05644</td>
+<td>1.4769</td>
+<td>0.072</td>
+<td>.</td>
+</tr>
+<tr>
+<td>Group6_TB_category</td>
+<td>1</td>
+<td>0.21748</td>
+<td>0.07095</td>
+<td>3.7132</td>
+<td>0.001</td>
+<td>***</td>
+</tr>
+<tr>
+<td>Residual</td>
+<td>45</td>
+<td>2.63568 0.85981</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Total</td>
+<td>49</td>
+<td>3.06544</td>
+<td>1.00000</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>---</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Signif. codes:  0 ‘<em><strong>’ 0.001 ‘</strong>’ 0.01 ‘</em>’ 0.05 ‘.’ 0.1 ‘ ’ 1</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="r">beta &lt;- betadisper(bray, sampledf$Group6_TB_category)
+permutest(beta)
+</code></pre>
+
+<p>Permutation test for homogeneity of multivariate dispersions
+Permutation: free
+Number of permutations: 999</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Df</th>
+<th>Sum Sq</th>
+<th>Mean Sq</th>
+<th>F</th>
+<th>N.Perm</th>
+<th>Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Groups</td>
+<td>1</td>
+<td>0.00044</td>
+<td>0.00044028</td>
+<td>0.1967</td>
+<td>999</td>
+<td>0.663</td>
+</tr>
+<tr>
+<td>Residuals</td>
+<td>48</td>
+<td>0.10747</td>
+<td>0.00223889</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<pre><code>
+```{r}
+#docker run -v ~/Desktop/Charles_MAIT/:/home/linuxbrew/inputs -it biobakery/lefse bash
 
 system(&quot;echo $PATH&quot;)
 results_folder &lt;- &quot;~/Desktop/Charles_MAIT/&quot; 
