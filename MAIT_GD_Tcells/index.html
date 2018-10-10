@@ -377,9 +377,8 @@ print(g2)
 ![abundance_plot](img/MAIT_GD/Correlated_FC-CC_0.01_LDA2.5_all.png)
 </code></pre>
 
-<pre><code class="r">common &lt;-intersect(lefse.out$taxon,cor_ht_dt_w$taxon)
-
-#big for loop
+<p>This for loop correlated specifc immune phenotypes (vars_to_keep) with microbiota abundance. It generates a lot of intermediate plots of the individual correlations, but I won't show those. </p>
+<pre><code class="r">#big for loop
 mainDir &lt;- &quot;~/Desktop/Charles_MAIT/&quot;
 subDir &lt;- &quot;DESeq_FC-CC_immune&quot;
 dir.create(file.path(mainDir, subDir), showWarnings = TRUE,recursive = TRUE)
@@ -561,15 +560,13 @@ ht1 = Heatmap(mat2, name = &quot;relativeAbundance&quot;, column_title = NA, #to
 ht_list = ht1
 draw(ht_list) 
 dev.off()
-
-# pdf(&quot;Tree.physig.pdf&quot;,height = 9.5,width = 20)
-# plot_tree(phy_sig, size=&quot;abundance&quot;, color=&quot;Phylum&quot;,label.tips = &quot;taxa_names&quot;,
-#           justify = &quot;yes please&quot;)
-# dev.off()
 </code></pre>
 
-<p>common &lt;-intersect(lefse.out$taxon,cor_ht_dt_w$taxon)</p>
-<p>phy_common &lt;- prune_taxa(taxa = common,phy_contacts)</p>
+<p>Below is the key output: cor_ht_dt_w$taxon are the taxa that correlate with immune phenotypes, and lefse.out$taxon are the taxa that are differentially abundant between Family Contacts and Community Controls. We intersect these and only look at taxa that are significant for both. </p>
+<pre><code class="r">common &lt;-intersect(lefse.out$taxon,cor_ht_dt_w$taxon)
+phy_common &lt;- prune_taxa(taxa = common,phy_contacts)
+</code></pre>
+
 <pre><code class="r">#Phylogenetic Tree
 phy_sig&lt;-prune_taxa(as.character(cor_ht_dt_w$taxon),phy_contacts)
 p.species &lt;- phy_common
@@ -593,15 +590,10 @@ g1 &lt;- gt + geom_tippoint(aes(color=Order),size=3) + geom_tiplab(size =3)
 
 g &lt;- gheatmap(g1,data_eff,offset=2.5, width=2,colnames_angle=-45,hjust=0,font.size = 5) +
   scale_fill_gradient2(low = &quot;darkred&quot;, mid = &quot;grey&quot;,high = &quot;darkblue&quot;) 
-
-print(g)
-
-
-pdf(paste(results_folder,&quot;gg.tree.FC_CC_0.01_DESeq&quot;,'.pdf',sep=&quot;&quot;),height = 1, width = 10)
-print(g)
-dev.off()
 </code></pre>
 
+<p><img alt="tree" src="../img/MAIT_GD/tree.png" /></p>
+<p>And finally, tsne plots were made with the tsnemicrobiota R package: </p>
 <pre><code class="r">#tsne plots
 library(phyloseq)
 library(tsnemicrobiota)
@@ -616,7 +608,9 @@ plot_tsne_phyloseq(phy_contacts, tsne_res,
   color = 'Group6_TB_category',shape=&quot;IGRA&quot;, title='t-SNE (jsd)') +
   geom_point(size=3) + scale_color_manual(values=c(Palette_FC_CC))+
   scale_fill_manual(values=c(Palette_FC_CC))
-</code></pre></div>
+</code></pre>
+
+<p><img alt="tSNE" src="../img/MAIT_GD/tSNE.png" /></p></div>
         </div>
 
         <footer class="col-md-12">
