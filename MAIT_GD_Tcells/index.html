@@ -121,12 +121,13 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#code-to-reproduce-figure-5-from-doi-101172jciinsight121899">Code to reproduce Figure 5 from doi: 10.1172/jci.insight.121899</a></li>
+        <li class="main active"><a href="#clinical-variables-that-explain-microbiome-differences">Clinical variables that explain microbiome differences</a></li>
+        <li class="main "><a href="#and-finally-tsne-plots-were-made-with-the-tsnemicrobiota-r-package">And finally, tsne plots were made with the tsnemicrobiota R package:</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="code-to-reproduce-figure-5-from-doi-101172jciinsight121899">Code to reproduce Figure 5 from <a href="https://insight.jci.org/articles/view/121899">doi: 10.1172/jci.insight.121899</a></h3>
+<p>Code to reproduce Figure 5 from <a href="https://insight.jci.org/articles/view/121899">doi: 10.1172/jci.insight.121899</a></p>
 <p><img alt="Fig5" src="../img/MAIT_GD/Fig5.png" /></p>
 <pre><code class="r">setwd(&quot;~/Desktop/Charles_MAIT/&quot;) #pick a directory
 rm(list=ls())
@@ -145,6 +146,7 @@ rownames_to_column &lt;- tibble::rownames_to_column
 phy_contacts &lt;- readRDS(&quot;phy.JCI.RDS&quot;)
 </code></pre>
 
+<h3 id="clinical-variables-that-explain-microbiome-differences">Clinical variables that explain microbiome differences</h3>
 <pre><code class="r"># Calculate bray curtis distance matrix
 bray &lt;- phyloseq::distance(phy_contacts, method = &quot;bray&quot;)
 
@@ -228,18 +230,9 @@ Number of permutations: 999</p>
 <td></td>
 <td></td>
 </tr>
-<tr>
-<td>Signif. codes:  0 ‘<em><strong>’ 0.001 ‘</strong>’ 0.01 ‘</em>’ 0.05 ‘.’ 0.1 ‘ ’ 1</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
 </tbody>
 </table>
-<p>This indicates that the variable 'Group6_TB_category' explains the variation between individuals given their microbiome compositioin, but IGRA status and sex do not contribute to this variation.</p>
+<p>This indicates that the variable 'Group6_TB_category' explains the variation between individuals given their microbiome compositioin (***), but IGRA status and sex do not contribute to this variation.</p>
 <pre><code class="r">beta &lt;- betadisper(bray, sampledf$Group6_TB_category)
 permutest(beta)
 </code></pre>
@@ -281,6 +274,7 @@ Number of permutations: 999</p>
 </tbody>
 </table>
 <pre><code>
+
 ```{r}
 #docker run -v ~/Desktop/Charles_MAIT/:/home/linuxbrew/inputs -it biobakery/lefse bash
 </code></pre>
@@ -593,7 +587,7 @@ g &lt;- gheatmap(g1,data_eff,offset=2.5, width=2,colnames_angle=-45,hjust=0,font
 </code></pre>
 
 <p><img alt="tree" src="../img/MAIT_GD/tree.png" /></p>
-<p>And finally, tsne plots were made with the tsnemicrobiota R package: </p>
+<h3 id="and-finally-tsne-plots-were-made-with-the-tsnemicrobiota-r-package">And finally, tsne plots were made with the tsnemicrobiota R package:</h3>
 <pre><code class="r">#tsne plots
 library(phyloseq)
 library(tsnemicrobiota)
