@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Fig5 - TBRU</title>
+        <title>Figure 5 - TBRU</title>
         <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
@@ -88,7 +88,7 @@
                                 <ul class="dropdown-menu">
                                     
 <li class="active">
-    <a href="./">Fig5</a>
+    <a href="./">Figure 5</a>
 </li>
                                 </ul>
                             </li>
@@ -239,6 +239,7 @@ Number of permutations: 999</p>
 </tr>
 </tbody>
 </table>
+<p>This indicates that the variable 'Group6_TB_category' explains the variation between individuals given their microbiome compositioin, but IGRA status and sex do not contribute to this variation.</p>
 <pre><code class="r">beta &lt;- betadisper(bray, sampledf$Group6_TB_category)
 permutest(beta)
 </code></pre>
@@ -282,8 +283,10 @@ Number of permutations: 999</p>
 <pre><code>
 ```{r}
 #docker run -v ~/Desktop/Charles_MAIT/:/home/linuxbrew/inputs -it biobakery/lefse bash
+</code></pre>
 
-system(&quot;echo $PATH&quot;)
+<p>N.B. Running LEfSe locally can be difficult if your system("echo $PATH") within R doesn't contain the LEfSe scripts, or if you constantly update R packages (like I do). This is guarenteed to cause problems with running LEfSe (e.g., rpy2 doesn't seem to be supported on my Mac any longer), so I've found docker to be an easy option. I run the above command on the command line, and can then run subsequent commands from R. </p>
+<pre><code class="r">system(&quot;echo $PATH&quot;)
 results_folder &lt;- &quot;~/Desktop/Charles_MAIT/&quot; 
 
 #make names lefse-friendly for python scripts
@@ -332,12 +335,9 @@ pre.lefse &lt;- pre.lefse %&gt;% t() %&gt;% na.omit() %&gt;% t()
 write.table(pre.lefse,file =paste(results_folder,&quot;lefse.txt&quot;,sep=&quot;&quot;),sep = &quot;\t&quot;,row.names = FALSE,col.names = FALSE,quote = FALSE)
 # 
 opt.class &lt;- paste(&quot;-c&quot;, which(keepvars %in% class))
-opt.subclass &lt;- ifelse(is.na(subclass), &quot;&quot;, paste(&quot;-s&quot;, which(keepvars %in% 
-                                                                subclass)))
-opt.subject &lt;- ifelse(is.na(subject), &quot;&quot;, paste(&quot;-u&quot;, which(keepvars %in% 
-                                                              subject)))
-format.command &lt;- paste(paste(&quot;format_input.py &quot;,results_folder,&quot;lefse.txt &quot;,results_folder,&quot;lefse.in&quot;,sep=&quot;&quot;), 
-                        opt.class, opt.subclass, opt.subject, &quot;-o 1000000&quot;)
+opt.subclass &lt;- ifelse(is.na(subclass), &quot;&quot;, paste(&quot;-s&quot;, which(keepvars %in% subclass)))
+opt.subject &lt;- ifelse(is.na(subject), &quot;&quot;, paste(&quot;-u&quot;, which(keepvars %in% subject)))
+format.command &lt;- paste(paste(&quot;format_input.py &quot;,results_folder,&quot;lefse.txt &quot;,results_folder,&quot;lefse.in&quot;,sep=&quot;&quot;), opt.class, opt.subclass, opt.subject, &quot;-o 1000000&quot;)
 system(format.command)
 #
 #docker run -v ~/Desktop/Charles_MAIT/:/home/linuxbrew/inputs -it biobakery/lefse bash
@@ -354,12 +354,6 @@ names(lefse.out)&lt;-c(&quot;taxon&quot;,&quot;log.max.pct&quot;,&quot;direction
 Palette_LTBI_treatment &lt;- c(&quot;#377eb8&quot;,&quot;#984ea3&quot;) #modify this
 
 ltk&lt;-as.character(lefse.out$taxon)
-# ltk.list&lt;-list()
-# for (i in seq(1,length(ltk))){
-#   tmp&lt;-strsplit(ltk[i],&quot;_&quot;)
-#   ltk.list[[i]]&lt;-tmp[[1]][2]
-# }
-# (ltk&lt;-as.character(do.call('rbind',ltk.list)))
 phy_ra_ltk&lt;-prune_taxa(ltk,phy_contacts)
 phy_ra_ltk_m&lt;-psmelt(phy_ra_ltk)
 
