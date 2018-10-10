@@ -122,6 +122,7 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#clinical-variables">Clinical variables</a></li>
+        <li class="main "><a href="#determining-microbiome-differences">Determining microbiome differences</a></li>
         <li class="main "><a href="#determining-immune-phenotype-differences">Determining immune phenotype differences</a></li>
     </ul>
 </div></div>
@@ -273,10 +274,25 @@ Number of permutations: 999</p>
 </tr>
 </tbody>
 </table>
-<pre><code>
-## Determining microbiome differences 
-```{r}
-#docker run -v ~/Desktop/Charles_MAIT/:/home/linuxbrew/inputs -it biobakery/lefse bash
+<h2 id="determining-microbiome-differences">Determining microbiome differences</h2>
+<pre><code class="r">#tsne plots
+library(phyloseq)
+library(tsnemicrobiota)
+library(ggplot2)
+
+tsne_res &lt;- tsne_phyloseq(phy_contacts, distance='jsd',perplexity = 8, verbose=0, rng_seed = 3901,dimensions=3)
+
+# Plot the results.
+#sample_data(phy_contacts)$cd4m_5aru &lt;- as.numeric(as.character(sample_data(phy_contacts)$cd4m_5aru))
+
+plot_tsne_phyloseq(phy_contacts, tsne_res,
+  color = 'Group6_TB_category',shape=&quot;IGRA&quot;, title='t-SNE (jsd)') +
+  geom_point(size=3) + scale_color_manual(values=c(Palette_FC_CC))+
+  scale_fill_manual(values=c(Palette_FC_CC))
+</code></pre>
+
+<p><img alt="tSNE" src="../img/MAIT_GD/tSNE.png" /></p>
+<pre><code class="r">#docker run -v ~/Desktop/Charles_MAIT/:/home/linuxbrew/inputs -it biobakery/lefse bash
 </code></pre>
 
 <p>N.B. Running LEfSe locally can be difficult if your system("echo $PATH") within R doesn't contain the LEfSe scripts, or if you constantly update R packages (like I do). This is guarenteed to cause problems with running LEfSe (e.g., rpy2 doesn't seem to be supported on my Mac any longer), so I've found docker to be an easy option. I run the above command on the command line, and can then run subsequent commands from R. </p>
@@ -587,24 +603,7 @@ g &lt;- gheatmap(g1,data_eff,offset=2.5, width=2,colnames_angle=-45,hjust=0,font
   scale_fill_gradient2(low = &quot;darkred&quot;, mid = &quot;grey&quot;,high = &quot;darkblue&quot;) 
 </code></pre>
 
-<p><img alt="tree" src="../img/MAIT_GD/tree.png" /></p>
-<pre><code class="r">#tsne plots
-library(phyloseq)
-library(tsnemicrobiota)
-library(ggplot2)
-
-tsne_res &lt;- tsne_phyloseq(phy_contacts, distance='jsd',
-                          perplexity = 8, verbose=0, rng_seed = 3901,dimensions=3)
-# Plot the results.
-#sample_data(phy_contacts)$cd4m_5aru &lt;- as.numeric(as.character(sample_data(phy_contacts)$cd4m_5aru))
-
-plot_tsne_phyloseq(phy_contacts, tsne_res,
-  color = 'Group6_TB_category',shape=&quot;IGRA&quot;, title='t-SNE (jsd)') +
-  geom_point(size=3) + scale_color_manual(values=c(Palette_FC_CC))+
-  scale_fill_manual(values=c(Palette_FC_CC))
-</code></pre>
-
-<p><img alt="tSNE" src="../img/MAIT_GD/tSNE.png" /></p></div>
+<p><img alt="tree" src="../img/MAIT_GD/tree.png" /></p></div>
         </div>
 
         <footer class="col-md-12">
