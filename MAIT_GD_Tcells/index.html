@@ -477,7 +477,7 @@ for (effectors in effectors_all){
       mat2&lt;-scale(t(mat), scale = T, center = T)
       mat2&lt;-t(mat2)
       annotations&lt;-data.frame(y_eff,as.character(get_variable(phy_var, &quot;Group6_TB_category&quot;)))
-      names(annotations)&lt;-c(&quot;effectors&quot;,&quot;group&quot;)#,&quot;conventional_cd8mtreg&quot;)#,&quot;IGRA&quot;)#,&quot;group&quot;)#&quot;cd8mtreg&quot;) #&quot;TB_status&quot;,&quot;IGRA&quot;,
+      names(annotations)&lt;-c(&quot;effectors&quot;,&quot;group&quot;)
 
       tmp_c &lt;- sample_data(phy_var) %&gt;% as.data.frame()
       #tmp_c[order(tmp_c)$effectors,] #[order(sample_data(phy_var)$effectors),]
