@@ -121,8 +121,9 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#clinical-variables-that-explain-microbiome-differences">Clinical variables that explain microbiome differences</a></li>
-        <li class="main "><a href="#and-finally-tsne-plots-were-made-with-the-tsnemicrobiota-r-package">And finally, tsne plots were made with the tsnemicrobiota R package:</a></li>
+        <li class="main active"><a href="#clinical-variables">Clinical variables</a></li>
+        <li class="main "><a href="#determining-immune-phenotype-differences">Determining immune phenotype differences</a></li>
+            <li><a href="#and-finally-tsne-plots-were-made-with-the-tsnemicrobiota-r-package">And finally, tsne plots were made with the tsnemicrobiota R package:</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -146,7 +147,7 @@ rownames_to_column &lt;- tibble::rownames_to_column
 phy_contacts &lt;- readRDS(&quot;phy.JCI.RDS&quot;)
 </code></pre>
 
-<h3 id="clinical-variables-that-explain-microbiome-differences">Clinical variables that explain microbiome differences</h3>
+<h2 id="clinical-variables">Clinical variables</h2>
 <pre><code class="r"># Calculate bray curtis distance matrix
 bray &lt;- phyloseq::distance(phy_contacts, method = &quot;bray&quot;)
 
@@ -274,7 +275,7 @@ Number of permutations: 999</p>
 </tbody>
 </table>
 <pre><code>
-
+## Determining microbiome differences 
 ```{r}
 #docker run -v ~/Desktop/Charles_MAIT/:/home/linuxbrew/inputs -it biobakery/lefse bash
 </code></pre>
@@ -371,6 +372,7 @@ print(g2)
 ![abundance_plot](img/MAIT_GD/Correlated_FC-CC_0.01_LDA2.5_all.png)
 </code></pre>
 
+<h2 id="determining-immune-phenotype-differences">Determining immune phenotype differences</h2>
 <p>This for loop correlated specifc immune phenotypes (vars_to_keep) with microbiota abundance. It generates a lot of intermediate plots of the individual correlations, but I won't show those. </p>
 <pre><code class="r">#big for loop
 mainDir &lt;- &quot;~/Desktop/Charles_MAIT/&quot;
