@@ -122,7 +122,6 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#code-to-reproduce-figure-5-from-doi-101172jciinsight121899">Code to reproduce Figure 5 from doi: 10.1172/jci.insight.121899</a></li>
-        <li class="main "><a href="#give-priority-to-specific-functions-for-annoying-namespace-reasons">Give priority to specific functions for annoying namespace reasons</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -146,7 +145,6 @@ rownames_to_column &lt;- tibble::rownames_to_column
 phy_contacts &lt;- readRDS(&quot;phy.JCI.RDS&quot;)
 </code></pre>
 
-<h3 id="give-priority-to-specific-functions-for-annoying-namespace-reasons">Give priority to specific functions for annoying namespace reasons</h3>
 <pre><code class="r"># Calculate bray curtis distance matrix
 bray &lt;- phyloseq::distance(phy_contacts, method = &quot;bray&quot;)
 
@@ -158,9 +156,32 @@ library(vegan)
 set.seed(12345678)
 adonis2(bray ~ IGRA + sex + Group6_TB_category, data = sampledf)
 
+Permutation test for adonis under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+|    |Df |SumsOfSqs |MeanSqs |F.Model      |R2 |Pr(&gt;F)
+|---|---|---|---|---|---|---|
+|IGRA      |  1    | 0.03927 |0.01281 |0.6705 | 0.851 |
+|sex       |  2   |  0.17300 |0.05644 |1.4769 | 0.072 |.|
+|Group6_TB_category | 1 | 0.21748 |0.07095 |3.7132  |0.001 |***|
+|Residual     |      45 | 2.63568 0.85981|
+|Total       |       49 | 3.06544 | 1.00000|
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 beta &lt;- betadisper(bray, sampledf$Group6_TB_category)
 permutest(beta)
+
+Permutation test for homogeneity of multivariate dispersions
+Permutation: free
+Number of permutations: 999
+
+|   | Df | Sum Sq | Mean Sq | F | N.Perm | Pr(&gt;F) |
+|---|---|---|---|---|---|---|
+|Groups   |  1 | 0.00044 | 0.00044028 | 0.1967  |  999 | 0.663|
+|Residuals | 48 | 0.10747 | 0.00223889|
 </code></pre>
 
 <pre><code class="r">#docker run -v ~/Desktop/Charles_MAIT/:/home/linuxbrew/inputs -it biobakery/lefse bash
