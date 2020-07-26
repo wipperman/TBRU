@@ -7,11 +7,11 @@
         
         
         
-        <link rel="shortcut icon" href="/img/favicon.ico">
-        <title>TBRU</title>
-        <link href="/css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="/css/font-awesome.min.css" rel="stylesheet">
-        <link href="/css/base.css" rel="stylesheet">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>tb_paper_2020 - TBRU</title>
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -19,8 +19,8 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
 
-        <script src="/js/jquery-1.10.2.min.js" defer></script>
-        <script src="/js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap-3.0.3.min.js" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script> 
     </head>
@@ -39,7 +39,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/.">TBRU</a>
+                    <a class="navbar-brand" href="..">TBRU</a>
                 </div>
 
                 <!-- Expanded navigation -->
@@ -47,26 +47,26 @@
                         <!-- Main navigation -->
                         <ul class="nav navbar-nav">
                             <li >
-                                <a href="/.">Home</a>
+                                <a href="..">Home</a>
                             </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">16S data <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
 <li >
-    <a href="/GettingStarted/">Getting Started</a>
+    <a href="../GettingStarted/">Getting Started</a>
 </li>
                                     
 <li >
-    <a href="/Treatment/">Treatment</a>
+    <a href="../Treatment/">Treatment</a>
 </li>
                                     
 <li >
-    <a href="/Cured/">Cured</a>
+    <a href="../Cured/">Cured</a>
 </li>
                                     
 <li >
-    <a href="/IGRA/">IGRA status</a>
+    <a href="../IGRA/">IGRA status</a>
 </li>
                                 </ul>
                             </li>
@@ -75,11 +75,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li >
-    <a href="/Treatment_metagenomics/">Treatment</a>
+    <a href="../Treatment_metagenomics/">Treatment</a>
 </li>
                                     
 <li >
-    <a href="/Cured_metagenomics/">Cured</a>
+    <a href="../Cured_metagenomics/">Cured</a>
 </li>
                                 </ul>
                             </li>
@@ -88,15 +88,15 @@
                                 <ul class="dropdown-menu">
                                     
 <li >
-    <a href="/MAIT_GD_Tcells/">JCI Insight</a>
+    <a href="../MAIT_GD_Tcells/">JCI Insight</a>
 </li>
                                 </ul>
                             </li>
                             <li >
-                                <a href="/2020 TB paper - Code:TB_paper_2020.md">None</a>
+                                <a href="../2020 TB paper - Code:TB_paper_2020.md">None</a>
                             </li>
                             <li >
-                                <a href="/about/">About</a>
+                                <a href="../about/">About</a>
                             </li>
                         </ul>
 
@@ -112,15 +112,30 @@
         </div>
 
         <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#tb_paper_2020">tb_paper_2020</a></li>
+        <li class="main "><a href="#please-download-the-data-from-following-dropbox-folder-to-run-the-scripts">Please download the data from following dropbox folder to run the scripts:</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
 
-    <div class="row-fluid">
-      <div id="main-content" class="span12">
-        <h1 id="404-page-not-found" style="text-align: center">404</h1>
-        <p style="text-align: center"><strong>Page not found</strong></p>
-      </div>
-    </div>
-
-
+<h1 id="tb_paper_2020">tb_paper_2020</h1>
+<h1 id="please-download-the-data-from-following-dropbox-folder-to-run-the-scripts">Please download the data from following dropbox folder to run the scripts:</h1>
+<p>https://www.dropbox.com/sh/6icxbajdokgoxlv/AAAwUEzO96m2mrDojjARDoTTa?dl=0</p>
+<p>The R scripts can be executed in following order: (based on order of paper figures)
+a)Fig_2
+b)Fig_3
+c)Fig_4
+d)Fig_5A
+e)Fig_5B
+f)FGSEA 
+g)comb_gsva (GSVA for all RNA Samples)
+h)cross_val_fc_cc 
+i)rf_model_FC_CC (RF Model for Hallmark Pathways using FC and CC samples)
+j)lme_pathways 
+k)diff_rf (Diff RF Model)
+l)Supp (Supplementary files)</p></div>
         </div>
 
         <footer class="col-md-12">
@@ -128,11 +143,11 @@
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
         <script>
-            var base_url = "/",
+            var base_url = "..",
                 shortcuts = {"search": 83, "next": 78, "help": 191, "previous": 80};
         </script>
-        <script src="/js/base.js" defer></script>
-        <script src="/search/main.js" defer></script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
     <div class="modal-dialog">
